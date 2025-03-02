@@ -1,0 +1,196 @@
+body {
+    font-family: 'Arial', sans-serif;
+    background: linear-gradient(135deg, #6a11cb, #2575fc);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    color: #333;
+}
+
+.container {
+    background-color: #fff;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    width: 350px;
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 24px;
+    color: #444;
+}
+
+#taskInput {
+    width: calc(100% - 22px);
+    padding: 12px;
+    margin-bottom: 15px;
+    border: 2px solid #ddd;
+    border-radius: 6px;
+    font-size: 16px;
+    transition: border-color 0.3s ease;
+}
+
+#taskInput:focus {
+    border-color: #6a11cb;
+    outline: none;
+}
+
+#addTaskBtn {
+    width: 100%;
+    padding: 12px;
+    background-color: #6a11cb;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+#addTaskBtn:hover {
+    background-color: #2575fc;
+    transform: scale(1.05);
+}
+
+#addTaskBtn:active {
+    transform: scale(0.95);
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+li {
+    padding: 12px;
+    background-color: #f8f9fa;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    margin-bottom: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+li:hover {
+    background-color: #e9ecef;
+    transform: translateX(5px);
+}
+
+li button {
+    background-color: #dc3545;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 6px 12px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+li button:hover {
+    background-color: #c82333;
+    transform: scale(1.1);
+}
+
+li button:active {
+    transform: scale(0.9);
+}
+
+/* Estilo para el checkbox */
+li input[type="checkbox"] {
+    margin-right: 10px;
+    cursor: pointer;
+}
+
+/* Estilo para las tareas completadas */
+li.completed {
+    text-decoration: line-through;
+    color: #6c757d;
+    background-color: #e2e3e5;
+}
+
+li.completed:hover {
+    background-color: #d6d8db;
+}
+
+/* Estilo del botón "Editar" */
+li .edit-btn {
+    background-color: #28a745; /* Verde */
+    color: #fff; /* Texto blanco */
+    border: none;
+    border-radius: 4px;
+    padding: 6px 12px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    margin-right: 5px;
+}
+
+li .edit-btn:hover {
+    background-color: #218838; /* Verde más oscuro en hover */
+    transform: scale(1.1);
+}
+
+li .edit-btn:active {
+    transform: scale(0.9);
+}
+
+/* Estilo del botón "Guardar" */
+li .save-btn {
+    background-color: #17a2b8; /* Azul claro */
+    color: #fff; /* Texto blanco */
+    border: none;
+    border-radius: 4px;
+    padding: 6px 12px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    margin-right: 5px;
+}
+
+li .save-btn:hover {
+    background-color: #138496; /* Azul más oscuro en hover */
+    transform: scale(1.1);
+}
+
+li .save-btn:active {
+    transform: scale(0.9);
+
+/* Estilos para el header (logo y título) */
+.header {
+    display: flex;
+    align-items: center; /* Alinea el logo y el título verticalmente */
+    justify-content: center; /* Centra el contenido horizontalmente */
+    margin-bottom: 20px;
+}
+
+/* Estilos para el logo */
+.logo {
+    width: 50px; /* Ajusta el tamaño del logo */
+    height: auto; /* Mantiene la proporción de la imagen */
+    margin-right: 10px; /* Espacio entre el logo y el título */
+}
+
+/* Estilos para el título */
+h1 {
+    margin: 0; /* Elimina el margen predeterminado */
+    font-size: 24px;
+    color: #444;
+}
+}
