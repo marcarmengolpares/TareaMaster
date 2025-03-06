@@ -194,3 +194,47 @@ h1 {
     color: #444;
 }
 }
+
+/* Estil per a l'element fantasma (durant l'arrossegament) */
+.ghost {
+    opacity: 0.5;
+    background-color: #f0f0f0;
+}
+
+/* Estil per a les tasques */
+li {
+    cursor: grab; /* Canvia el cursor per indicar que es pot arrossegar */
+    user-select: none; /* Evita que el text es seleccioni durant l'arrossegament */
+}
+
+li:active {
+    cursor: grabbing; /* Canvia el cursor quan s'està arrossegant */
+}
+
+/* Estil per a l'icona de punts verticals */
+.drag-handle {
+    cursor: grab; /* Canvia el cursor per indicar que es pot arrossegar */
+    margin-right: 10px; /* Espai entre l'icona i el text */
+    color: #666; /* Color de l'icona */
+}
+
+.drag-handle:active {
+    cursor: grabbing; /* Canvia el cursor quan s'està arrossegant */
+}
+
+/* Estil per a les tasques */
+li {
+    display: flex;
+    align-items: center; /* Alinea verticalment l'icona i el text */
+    padding: 12px;
+    background-color: #f8f9fa;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    margin-bottom: 8px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+li:hover {
+    background-color: #e9ecef;
+    transform: translateX(5px);
+}
