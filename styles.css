@@ -224,17 +224,160 @@ li:active {
 
 /* Estil per a les tasques */
 li {
-    display: flex;
-    align-items: center; /* Alinea verticalment l'icona i el text */
     padding: 12px;
-    background-color: #f8f9fa;
-    border: 1px solid #ddd;
+    background-color: var(--container-bg);
+    border: 1px solid var(--border-color);
     border-radius: 6px;
     margin-bottom: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     transition: background-color 0.3s ease, transform 0.2s ease;
+    color: var(--text-color); /* Color del text de les tasques */
 }
 
 li:hover {
-    background-color: #e9ecef;
+    background-color: var(--button-hover-bg);
     transform: translateX(5px);
+}
+/* Variables per al mode clar */
+:root {
+    --background-color: #ffffff;
+    --text-color: #333333; /* Color del text en mode clar */
+    --container-bg: #f8f9fa;
+    --border-color: #ddd;
+    --button-bg: #6a11cb;
+    --button-hover-bg: #2575fc;
+}
+
+/* Variables per al mode fosc */
+[data-theme="dark"] {
+    --background-color: #121212;
+    --text-color: #ffffff; /* Color del text en mode fosc */
+    --container-bg: #1e1e1e;
+    --border-color: #444;
+    --button-bg: #bb86fc;
+    --button-hover-bg: #883fe2;
+}
+
+/* Estils generals */
+body {
+    background-color: var(--background-color);
+    color: var(--text-color);
+    font-family: 'Arial', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.container {
+    background-color: var(--container-bg);
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    width: 350px;
+    transition: background-color 0.3s ease;
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 24px;
+    color: var(--text-color);
+}
+
+#taskInput {
+    width: calc(100% - 22px);
+    padding: 12px;
+    margin-bottom: 15px;
+    border: 2px solid var(--border-color);
+    border-radius: 6px;
+    font-size: 16px;
+    background-color: var(--container-bg);
+    color: var(--text-color);
+    transition: border-color 0.3s ease, background-color 0.3s ease, color 0.3s ease;
+}
+
+#taskInput:focus {
+    border-color: var(--button-bg);
+    outline: none;
+}
+
+#addTaskBtn {
+    width: 100%;
+    padding: 12px;
+    background-color: var(--button-bg);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    margin-bottom: 20px;
+}
+
+#addTaskBtn:hover {
+    background-color: var(--button-hover-bg);
+    transform: scale(1.05);
+}
+
+#addTaskBtn:active {
+    transform: scale(0.95);
+}
+
+/* Estil del botó de canvi de mode */
+.theme-toggle {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 100px;
+    color: var(--text-color);
+    transition: color 0.3s ease;
+}
+
+.theme-toggle:hover {
+    color: var(--button-bg);
+}
+
+/* Estil del botó de canviar estil */
+.theme-toggle {
+    position: fixed; /* Fixa el botó a la pantalla */
+    bottom: 80px; /* Distància des de la part inferior */
+    left: 50px; /* Distància des de l'esquerra */
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 30px;
+    color: var(--text-color);
+    transition: color 0.3s ease;
+    z-index: 1000; /* Assegura que el botó estigui per sobre d'altres elements */
+}
+
+.theme-toggle:hover {
+    color: var(--button-bg);
+}
+
+.logo-container {
+    position: absolute; /* Posicionament absolut per col·locar el logo a dalt a l'esquerra */
+    top: 20px; /* Distància des de la part superior */
+    left: 20px; /* Distància des de l'esquerra */
+}
+
+/* Estil del logo */
+.logo {
+    width: 80px; /* Mida més petita (ajusta segons necessitis) */
+    height: auto; /* Manté la proporció de la imatge */
+}
+
+/* Estil del contenidor de tasques */
+.container {
+    background-color: var(--container-bg);
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    width: 350px;
+    transition: background-color 0.3s ease;
 }
