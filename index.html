@@ -17,19 +17,24 @@
           "@context": "https://schema.org",
           "@type": "Organization",
           "url": "https://marcarmengolpares.github.io/TareaMaster/",
-          "logo": "https://marcarmengolpares.github.io/TareaMaster/"
+          "logo": "LOGOWEBOFICIAL.png"
         }
         </script>
 </head>
 <body>
+    <div class="logo-container">
+        <img src="LOGOINTERFAZ.png" alt="Logo de la web" class="logo">
+    </div>
     <div class="container">
-        <div class="header">
-            <img src="LOGOINTERFAZ.png" alt="Logo de la web" class="logo">
         <h1>Lista de tareas</h1>
         <input type="text" id="taskInput" placeholder="Nueva tarea...">
         <button id="addTaskBtn">Añadir tarea</button>
         <ul id="taskList"></ul>
+        <button id="themeToggle" class="theme-toggle">
+            <i class="fas fa-moon"></i> 
+        </button>
     </div>
+    
     <script src="script.js"></script>
 </body>
 </html>
