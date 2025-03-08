@@ -2,6 +2,36 @@ document.addEventListener('DOMContentLoaded', function () {
     const taskInput = document.getElementById('taskInput');
     const addTaskBtn = document.getElementById('addTaskBtn');
     const taskList = document.getElementById('taskList');
+    const themeToggle = document.getElementById('themeToggle');
+    const body = document.body;
+
+    
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme) {
+        body.setAttribute('data-theme', savedTheme);
+        updateToggleIcon(savedTheme);
+    }
+
+    // Canvia el tema quan es faci clic al botó
+    themeToggle.addEventListener('click', function () {
+        const currentTheme = body.getAttribute('data-theme');
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        body.setAttribute('data-theme', newTheme);
+        localStorage.setItem('theme', newTheme);
+        updateToggleIcon(newTheme);
+    });
+
+    // Actualitza la icona del botó
+    function updateToggleIcon(theme) {
+        const icon = themeToggle.querySelector('i');
+        if (theme === 'dark') {
+            icon.classList.remove('fa-moon');
+            icon.classList.add('fa-sun');
+        } else {
+            icon.classList.remove('fa-sun');
+            icon.classList.add('fa-moon');
+        }
+    }
 
     // Cargar tareas desde localStorage
     let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
