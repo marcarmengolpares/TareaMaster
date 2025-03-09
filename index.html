@@ -4,37 +4,42 @@
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <meta name="description" content="TareaMaster es una aplicación web gratuita para gestionar tus tareas pendientes. Organiza tus tareas de forma sencilla y eficiente.">
-    <meta name="keywords" content="tareas, lista de tareas, organización, productividad, TareaMaster, organizador de tareas, GitHub Pages,  ">
+    <meta name="keywords" content="tareas, lista de tareas, organización, productividad, TareaMaster, organizador de tareas, GitHub Pages">
+    <meta name="author" content="Marc Armengol">
     <meta name="google-site-verification" content="r5slbtg71Mvyv2lPvA3sQN92eqsnYEk0o2VP3C_oPlA" />
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lista de tareas</title>
-    <link rel="icon" type="image/x-icon" href="LOGOWEBOFICIAL.png"> 
+    <title>TareaMaster - Gestor de tasques</title>
+    <link rel="icon" type="image/x-icon" href="LOGOINTERFAZ.png">
     <link rel="stylesheet" href="styles.css">
-    <link rel="icon" type="image/png" href="LOGOWEBOFICIAL.png">
     <script type="application/ld+json">
-        {
-          "@context": "https://schema.org",
-          "@type": "Organization",
-          "url": "https://marcarmengolpares.github.io/TareaMaster/",
-          "logo": "LOGOWEBOFICIAL.png"
-        }
-        </script>
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "url": "https://marcarmengolpares.github.io/TareaMaster/",
+      "logo": "Logo Web Google.png"
+    }
+    </script>
 </head>
 <body>
+    <!-- Logo a dalt a l'esquerra -->
     <div class="logo-container">
-        <img src="LOGOINTERFAZ.png" alt="Logo de la web" class="logo">
+        <img src="Logo Web.png" alt="Logo de la web" class="logo">
     </div>
+
+    <!-- Contenidor de tasques -->
     <div class="container">
         <h1>Lista de tareas</h1>
         <input type="text" id="taskInput" placeholder="Nueva tarea...">
         <button id="addTaskBtn">Añadir tarea</button>
         <ul id="taskList"></ul>
-        <button id="themeToggle" class="theme-toggle">
-            <i class="fas fa-moon"></i> 
-        </button>
     </div>
-    
+
+    <!-- Botó de canviar estil (abaix a l'esquerra) -->
+    <button id="themeToggle" class="theme-toggle">
+        <i class="fas fa-moon"></i>
+    </button>
+
     <script src="script.js"></script>
 </body>
 </html>
