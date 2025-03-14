@@ -4,6 +4,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const taskList = document.getElementById('taskList');
     const themeToggle = document.getElementById('themeToggle');
     const body = document.body;
+    const prioritySelect = document.getElementById('prioritySelect');
 
     
     const savedTheme = localStorage.getItem('theme');
@@ -40,12 +41,15 @@ document.addEventListener('DOMContentLoaded', function () {
         taskList.innerHTML = '';
         tasks.forEach((task, index) => {
             const li = document.createElement('li');
-            li.draggable = true; // Permet arrossegar les tasques
+            li.draggable = true;
+            li.className = `prioritat-${task.priority}`;
     
-            // Icona de punts verticals
-            const dragHandle = document.createElement('i');
-            dragHandle.classList.add('fas', 'fa-grip-vertical', 'drag-handle');
-            li.appendChild(dragHandle);
+            // Icona de prioritat
+            const priorityIcon = document.createElement('i');
+            priorityIcon.className = task.priority === 'alta' ? 'fas fa-exclamation-circle' :
+                                     task.priority === 'mitjana' ? 'fas fa-exclamation-triangle' :
+                                     'fas fa-check-circle';
+            li.appendChild(priorityIcon);
     
             // Text de la tasca
             const taskText = document.createElement('span');
@@ -73,7 +77,6 @@ document.addEventListener('DOMContentLoaded', function () {
             li.appendChild(deleteBtn);
             taskList.appendChild(li);
     
-            // Marca la tasca com a completada si és necessari
             if (task.completed) {
                 li.classList.add('completed');
             }
@@ -82,13 +85,19 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function addTask() {
         const text = taskInput.value.trim();
+        const priority = prioritySelect.value; // Obté la prioritat seleccionada (pot ser buida)
+    
         if (text !== '') {
-            tasks.push({ text, completed: false });
+            tasks.push({ text, priority: priority || null }); // Si no hi ha prioritat, s'assigna null
             taskInput.value = '';
+            prioritySelect.value = ''; // Restableix el selector de prioritat
             saveTasks();
             renderTasks();
+        } else {
+            alert('Si us plau, introdueix una tasca.');
         }
     }
+    
 
     function toggleTaskCompletion(index) {
         tasks[index].completed = !tasks[index].completed;
