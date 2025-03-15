@@ -513,3 +513,29 @@ li {
     color: #999; /* Color gris per a l'opció per defecte */
     font-style: italic; /* Text en cursiva per a l'opció per defecte */
 }
+
+/* Estil per al selector de prioritat dins del formulari d'edició */
+.edit-input, .priority-select {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 2px solid var(--border-color);
+    border-radius: 6px;
+    font-size: 14px;
+    background-color: var(--container-bg);
+    color: var(--text-color);
+    transition: border-color 0.3s ease, background-color 0.3s ease, color 0.3s ease;
+}
+
+.priority-select {
+    appearance: none;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23333"><path d="M7 10l5 5 5-5z"/></svg>');
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 12px;
+}
+
+.priority-select:focus {
+    border-color: var(--button-bg);
+    outline: none;
+}
