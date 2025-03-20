@@ -24,4 +24,26 @@ Aquí tienes algunos consejos para sacarle el máximo partido a TareaMaster:
 ## Cómo usar
 1. Clona este repositorio:
    ```bash
-   git clone https://github.com/Marc-TareaMaster/TareaMaster.git
+   git clone https://marcarmengolpares.github.io/TareaMaster/
+
+## Registre de Canvis
+
+### Versió 1.1.0 (2023-10-25)
+#### Afegit
+- Funcionalitat per editar la prioritat de les tasques.
+- Possibilitat de treure la prioritat d'una tasca.
+- Bloqueig de l'arrossegament de tasques mentre s'estan editant.
+
+#### Corregit
+- Error que impedia afegir tasques noves.
+- Problema amb el color de fons de les tasques sense prioritat.
+
+#### Millorat
+- Optimització del CSS per fer-lo més curt i llegible.
+- Traducció del CSS a anglès, mantenint els comentaris en català.
+
+### Versió 1.0.0 (2023-10-20)
+#### Afegit
+- Funcionalitat bàsica per afegir, editar i eliminar tasques.
+- Selecció de prioritat per a les tasques (alta, mitjana, baixa).
+- Guardat de tasques a `localStorage`.
