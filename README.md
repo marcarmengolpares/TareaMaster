@@ -28,7 +28,7 @@ Aquí tienes algunos consejos para sacarle el máximo partido a TareaMaster:
 
 ## Registre de Canvis
 
-### Versió 1.1.0 (2023-10-25)
+### Versió 1.0.0 (2025-3-5)
 #### Afegit
 - Funcionalitat per editar la prioritat de les tasques.
 - Possibilitat de treure la prioritat d'una tasca.
@@ -42,7 +42,7 @@ Aquí tienes algunos consejos para sacarle el máximo partido a TareaMaster:
 - Optimització del CSS per fer-lo més curt i llegible.
 - Traducció del CSS a anglès, mantenint els comentaris en català.
 
-### Versió 1.0.0 (2023-10-20)
+### Versió 1.1.0 (2025-3-16)
 #### Afegit
 - Funcionalitat bàsica per afegir, editar i eliminar tasques.
 - Selecció de prioritat per a les tasques (alta, mitjana, baixa).
