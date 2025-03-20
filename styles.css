@@ -539,3 +539,11 @@ li {
     border-color: var(--button-bg);
     outline: none;
 }
+
+
+.char-counter {
+    text-align: right; /* Alinea el text a la dreta */
+    font-size: 14px; /* Mida de la font */
+    color: #666; /* Color del text */
+    margin-top: 5px; /* Espai superior */
+}
