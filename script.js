@@ -102,9 +102,15 @@ document.addEventListener('DOMContentLoaded', function () {
     function addTask() {
         const text = taskInput.value.trim();
         const priority = prioritySelect.value;
-
+    
+        // Comprovar la longitud del text
+        if (text.length > 24) {
+            alert("La tasca no pot tenir més de 24 lletres.");
+            return; // Atura l'execució si la tasca és massa llarga
+        }
+    
         if (text !== '') {
-            tasks.push({ text, priority: priority || null, completed: false }); // Si no hi ha prioritat, s'assigna null
+            tasks.push({ text, priority: priority || null, completed: false });
             taskInput.value = '';
             prioritySelect.value = '';
             saveTasks();
@@ -182,11 +188,26 @@ document.addEventListener('DOMContentLoaded', function () {
     addTaskBtn.addEventListener('click', addTask);
 
     // Afegir tasques amb la tecla Enter
+    // Afegir tasques amb la tecla Enter
     taskInput.addEventListener('keypress', function (e) {
-        if (e.key === 'Enter') {
-            addTask();
+    if (e.key === 'Enter') {
+        e.preventDefault(); // Evita que es propagui l'esdeveniment
+        addTask(); // Crida la funció per afegir la tasca
+    }
+    });
+    // Limitar el nombre de caràcters al camp d'entrada
+    taskInput.addEventListener('input', function () {
+        const currentLength = taskInput.value.length;
+        charCounter.textContent = `${currentLength}/24`; // Actualitza el comptador
+    
+        // Canvia el color si s'arriba al límit
+        if (currentLength > 24) {
+            charCounter.style.color = 'red'; // Color vermell si supera el límit
+        } else {
+            charCounter.style.color = '#666'; // Color gris si està dins del límit
         }
     });
+    
 
     // Renderitza les tasques inicials
     renderTasks();
