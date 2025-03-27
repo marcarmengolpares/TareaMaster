@@ -22,6 +22,12 @@ document.addEventListener('DOMContentLoaded', function () {
         updateToggleIcon(newTheme);
     });
 
+    function formatDate(dateString) {
+        if (!dateString) return '';
+        const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
+        return new Date(dateString).toLocaleDateString('es-ES', options);
+    }
+
     // Actualitza la icona del botó de tema
     function updateToggleIcon(theme) {
         const icon = themeToggle.querySelector('i');
@@ -43,9 +49,9 @@ document.addEventListener('DOMContentLoaded', function () {
         tasks.forEach((task, index) => {
             const li = document.createElement('li');
             li.draggable = true;
-            li.className = `prioritat-${task.priority || 'null'}`; // Si no hi ha prioritat, s'assigna 'null'
+            li.className = `prioritat-${task.priority || 'null'}`;
     
-            // Icona de prioritat (només si hi ha prioritat)
+            // Icona de prioritat
             if (task.priority) {
                 const priorityIcon = document.createElement('i');
                 priorityIcon.className = task.priority === 'alta' ? 'fas fa-exclamation-circle' :
@@ -54,16 +60,15 @@ document.addEventListener('DOMContentLoaded', function () {
                 li.appendChild(priorityIcon);
             }
     
-            // Text de la tasca
+            // Text de la tasca (unificado con fecha)
             const taskText = document.createElement('span');
-            taskText.textContent = task.text;
+            taskText.textContent = task.text + (task.date ? ` (${formatDate(task.date)})` : '');
             li.appendChild(taskText);
     
-            // Contenidor pels botons
+            // Botones
             const buttonContainer = document.createElement('div');
             buttonContainer.classList.add('button-container');
-    
-            // Botó d'editar
+            
             const editBtn = document.createElement('button');
             editBtn.textContent = 'Editar';
             editBtn.classList.add('edit-btn');
@@ -71,8 +76,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 e.stopPropagation();
                 editTask(index, li);
             });
-    
-            // Botó d'eliminar
+            
             const deleteBtn = document.createElement('button');
             deleteBtn.textContent = 'Eliminar';
             deleteBtn.classList.add('delete-btn');
@@ -80,18 +84,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 e.stopPropagation();
                 deleteTask(index);
             });
-    
-            // Afegir botons al contenidor
+            
             buttonContainer.appendChild(editBtn);
             buttonContainer.appendChild(deleteBtn);
-    
-            // Afegir el contenidor de botons a la tasca
             li.appendChild(buttonContainer);
-    
-            // Afegir la tasca a la llista
             taskList.appendChild(li);
     
-            // Marcar com completada si és necessari
             if (task.completed) {
                 li.classList.add('completed');
             }
@@ -99,24 +97,25 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // Afegir una nova tasca
+    // En la función addTask, modifica la validación de longitud:
     function addTask() {
         const text = taskInput.value.trim();
         const priority = prioritySelect.value;
+        const date = document.getElementById('taskDate').value || null; // Nueva línea
     
-        // Comprovar la longitud del text
         if (text.length > 24) {
-            alert("La tasca no pot tenir més de 24 lletres.");
-            return; // Atura l'execució si la tasca és massa llarga
+            alert("La tarea no puede tener más de 24 caracteres.");
+            return;
         }
     
         if (text !== '') {
-            tasks.push({ text, priority: priority || null, completed: false });
+            tasks.push({ text, priority: priority || null, date, completed: false }); // Añade 'date'
             taskInput.value = '';
             prioritySelect.value = '';
+            document.getElementById('taskDate').value = ''; // Limpia el campo fecha
+            charCounter.textContent = '0/24';
             saveTasks();
             renderTasks();
-        } else {
-            alert('Si us plau, introdueix una tasca.');
         }
     }
 
@@ -137,6 +136,10 @@ document.addEventListener('DOMContentLoaded', function () {
     // Edita una tasca
     function editTask(index, li) {
         const task = tasks[index];
+        const dateInput = document.createElement('input');
+        dateInput.type = 'date';
+        dateInput.value = task.date || '';
+        dateInput.classList.add('date-input');
 
         // Desactivar l'arrossegament mentre s'està editant
         li.draggable = false;
@@ -161,6 +164,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const saveBtn = document.createElement('button');
         saveBtn.textContent = 'Guardar';
         saveBtn.classList.add('save-btn');
+        task.date = dateInput.value || null; // Nueva línea
         saveBtn.addEventListener('click', (e) => {
             e.stopPropagation();
             task.text = editInput.value.trim(); // Actualitzar el text de la tasca
@@ -223,14 +227,32 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Actualitza l'ordre de les tasques al localStorage
     function updateTaskOrder() {
-        const updatedTasks = Array.from(taskList.children).map((task, index) => {
-            return {
-                text: task.querySelector('span').textContent,
-                priority: tasks[index].priority,
-                completed: tasks[index].completed
-            };
+        const updatedTasks = [];
+        Array.from(taskList.children).forEach((taskElement) => {
+            const taskText = taskElement.querySelector('span').textContent.replace(/ \(\d{4}-\d{2}-\d{2}\)$/, ''); // Elimina la fecha del texto
+            const taskPriority = taskElement.className.replace('prioritat-', ''); // Obtiene la prioridad de la clase
+            const originalTask = tasks.find(t => t.text === taskText); // Busca la tarea original
+            
+            updatedTasks.push({
+                text: taskText,
+                priority: taskPriority !== 'null' ? taskPriority : null,
+                date: originalTask ? originalTask.date : null, // Mantiene la fecha original
+                completed: originalTask ? originalTask.completed : false
+            });
         });
+        
         tasks = updatedTasks;
         saveTasks();
+    }
+});
+
+// En el DOMContentLoaded, añade:
+document.getElementById('taskDate').addEventListener('focus', function() {
+    if(!this.value) this.type = 'date';
+});
+document.getElementById('taskDate').addEventListener('blur', function() {
+    if(!this.value) {
+        this.type = 'text';
+        this.placeholder = 'dd/mm/aaaa';
     }
 });
