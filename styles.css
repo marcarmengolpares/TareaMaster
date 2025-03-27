@@ -9,12 +9,13 @@ body {
     color: #333;
 }
 
+/* Amplada del contenidor de tasques */
 .container {
     background-color: #fff;
     padding: 25px;
     border-radius: 12px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-    width: 350px;
+    width: 700px; /* Amplada més gran (abans era 400px) */
     animation: fadeIn 0.5s ease-in-out;
 }
 
@@ -38,11 +39,12 @@ h1 {
 
 #taskInput {
     width: calc(100% - 22px);
-    padding: 12px;
+    padding: 8px 10px;
     margin-bottom: 15px;
     border: 2px solid #ddd;
     border-radius: 6px;
-    font-size: 16px;
+    font-size: 14px;
+    height: 38px; 
     transition: border-color 0.3s ease;
 }
 
@@ -53,12 +55,13 @@ h1 {
 
 #addTaskBtn {
     width: 100%;
-    padding: 12px;
+    padding: 8px 10px; 
     background-color: #6a11cb;
     color: #fff;
     border: none;
     border-radius: 6px;
-    font-size: 16px;
+    height: 38px;
+    font-size: 14px;
     cursor: pointer;
     transition: background-color 0.3s ease, transform 0.2s ease;
 }
@@ -78,16 +81,21 @@ ul {
     margin: 0;
 }
 
+/* Amplada dels elements de la llista (tasques) */
 li {
-    padding: 12px;
+    padding: 8px 10px; /* Aumenta el padding para más espacio interno */
     background-color: #f8f9fa;
     border: 1px solid #ddd;
     border-radius: 6px;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     transition: background-color 0.3s ease, transform 0.2s ease;
+    width: 100%;
+    word-break: break-word; /* Permite que el texto se divida en varias líneas */
+    white-space: normal; /* Permite saltos de línea */
+    min-height: 40px; /* Altura mínima para asegurar espacio */
 }
 
 li:hover {
@@ -398,24 +406,15 @@ h1 {
     border-left: 5px solid #00cc00; /* Verd */
 }
 
-/* Estil de les tasques */
-li {
-    padding: 12px;
-    margin-bottom: 8px;
-    border-radius: 6px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-}
 
 .priority-select {
     width: 100%;
-    padding: 12px;
+    padding: 8px 10px;
     margin-bottom: 15px;
     border: 2px solid var(--border-color);
     border-radius: 6px;
-    font-size: 16px;
+    font-size: 14px;
+    height: 38px; 
     background-color: var(--container-bg);
     color: var(--text-color);
     transition: border-color 0.3s ease, background-color 0.3s ease, color 0.3s ease;
@@ -540,10 +539,62 @@ li {
     outline: none;
 }
 
-
 .char-counter {
     text-align: right; /* Alinea el text a la dreta */
     font-size: 14px; /* Mida de la font */
     color: #666; /* Color del text */
     margin-top: 5px; /* Espai superior */
 }
+
+/* Ajusta el contenedor de botones */
+.button-container {
+    display: flex;
+    gap: 4px; /* Espacio entre botones */
+    flex-shrink: 0; /* Evita que los botones se compriman */
+}
+
+/* Ajusta el estilo del texto de la tarea */
+li span {
+    flex-grow: 1; /* Permite que el texto ocupe el espacio disponible */
+    margin: 0 10px; /* Añade margen a los lados */
+    text-align: left; /* Alinea el texto a la izquierda */
+    max-width: calc(100% - 120px); /* Limita el ancho para dejar espacio a los botones */
+}
+
+/* Estilo para el contenedor de inputs */
+.input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+/* Estilo para el input de fecha (similar al de prioridad) */
+.date-input {
+    width: 100%;
+    padding: 8px 10px; /* Reducido de 12px */
+    border: 2px solid var(--border-color);
+    border-radius: 6px;
+    font-size: 14px; /* Tamaño de fuente más pequeño */
+    height: 38px; /* Altura fija */
+    background-color: var(--container-bg);
+    color: var(--text-color);
+    box-sizing: border-box; /* Para que el padding no afecte el ancho */
+}
+
+.date-input:focus {
+    border-color: var(--button-bg);
+    outline: none;
+}
+
+/* Estilo para el placeholder del date input */
+.date-input::placeholder {
+    color: #999;
+    font-style: italic;
+}
+
+button.edit-btn, button.delete-btn {
+    padding: 4px 8px; /* Ajuste de padding */
+    font-size: 12px; /* Tamaño de fuente igualado */
+}
+
