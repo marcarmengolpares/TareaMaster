@@ -64,6 +64,8 @@ h1 {
     font-size: 14px;
     cursor: pointer;
     transition: background-color 0.3s ease, transform 0.2s ease;
+    margin-top: 8px; /* Espacio superior igual al inferior */
+
 }
 
 #addTaskBtn:hover {
@@ -87,7 +89,7 @@ li {
     background-color: #f8f9fa;
     border: 1px solid #ddd;
     border-radius: 6px;
-    margin-bottom: 6px;
+    margin-bottom: 8px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -151,6 +153,17 @@ li .edit-btn {
     margin-right: 5px;
 }
 
+.edit-form {
+    display: flex;
+    align-items: flex-start; /* Alinea todos los elementos */
+    gap: 8px; /* Espacio consistente */
+}
+
+.edit-form .save-btn {
+    align-self: center; /* Centra solo este elemento verticalmente */
+    margin-top: -1; /* Elimina cualquier desalineación */
+}
+
 li .edit-btn:hover {
     background-color: #218838; /* Verde más oscuro en hover */
     transform: scale(1.1);
@@ -166,10 +179,28 @@ li .save-btn {
     color: #fff; /* Texto blanco */
     border: none;
     border-radius: 4px;
-    padding: 6px 12px;
+    height: 38px; /* Igual que el selector */
+    padding: 6px 14px;
     cursor: pointer;
     transition: background-color 0.3s ease, transform 0.2s ease;
     margin-right: 5px;
+    min-width: 80px;
+    white-space: nowrap; /* Evita saltos de línea */
+
+}
+
+.save-btn {
+    height: 38px; /* Misma altura que el selector */
+    padding: 0 12px; /* Ajuste horizontal */
+    line-height: 38px; /* Centrado vertical */
+    min-width: 80px;
+    display: inline-flex;
+    align-items: center; /* Centrado vertical */
+    justify-content: center; /* Centrado horizontal */
+    line-height: normal; /* Resetear si estaba definido */
+    margin-top: 0; /* Eliminar márgenes que desalineen */
+
+
 }
 
 li .save-btn:hover {
@@ -283,7 +314,7 @@ body {
 
 .container {
     background-color: var(--container-bg);
-    padding: 25px;
+    padding: 20px;
     border-radius: 12px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
     width: 350px;
@@ -300,7 +331,7 @@ h1 {
 #taskInput {
     width: calc(100% - 22px);
     padding: 12px;
-    margin-bottom: 15px;
+    margin-bottom: 8px;
     border: 2px solid var(--border-color);
     border-radius: 6px;
     font-size: 16px;
@@ -415,6 +446,7 @@ h1 {
     border-radius: 6px;
     font-size: 14px;
     height: 38px; 
+    
     background-color: var(--container-bg);
     color: var(--text-color);
     transition: border-color 0.3s ease, background-color 0.3s ease, color 0.3s ease;
@@ -423,6 +455,18 @@ h1 {
     background-repeat: no-repeat;
     background-position: right 10px center;
     background-size: 12px;
+}
+
+[data-theme="dark"] .priority-select {
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23ffffff"><path d="M7 10l5 5 5-5z"/></svg>');
+}
+
+[data-theme="dark"] .date-input::-webkit-calendar-picker-indicator {
+    filter: invert(1); /* Invierte el color a blanco */
+}
+
+[data-theme="white"] .date-input {
+    color-scheme: white; /* Fondo oscuro del calendario desplegable */
 }
 
 .priority-select:focus {
@@ -551,6 +595,12 @@ h1 {
     display: flex;
     gap: 4px; /* Espacio entre botones */
     flex-shrink: 0; /* Evita que los botones se compriman */
+    min-width: 150px; /* Espacio mínimo para los botones */
+    justify-content: flex-end; /* Alinea a la derecha */
+    align-items: center; /* Alineación vertical con otros elementos */
+    height: 38px; /* Misma altura que los inputs */
+
+
 }
 
 /* Ajusta el estilo del texto de la tarea */
@@ -565,7 +615,7 @@ li span {
 .input-group {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 8px;
     margin-bottom: 15px;
 }
 
@@ -580,6 +630,7 @@ li span {
     background-color: var(--container-bg);
     color: var(--text-color);
     box-sizing: border-box; /* Para que el padding no afecte el ancho */
+    margin-bottom: 8px; /* Igual que otros elementos */
 }
 
 .date-input:focus {
@@ -598,3 +649,15 @@ button.edit-btn, button.delete-btn {
     font-size: 12px; /* Tamaño de fuente igualado */
 }
 
+.edit-mode .save-btn {
+    padding: 8px 15px; /* Más grande durante la edición */
+    font-size: 14px; /* Tamaño de fuente adecuado */
+    height: 38px;
+
+}
+
+.save-btn {
+    position: relative;
+    top: -5px; /* Lo sube ligeramente */
+    margin-bottom: -2px; /* Compensa el desplazamiento */
+}
