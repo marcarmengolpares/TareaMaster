@@ -19,7 +19,7 @@
       "@type": "WebSite",
       "name": "TareaMaster",
       "url": "https://marcarmengolpares.github.io/TareaMaster/",
-      "logo": "https://marcarmengolpares.github.io/TareaMaster/Logo%20Web%20Google.png"
+      "logo": "https://marcarmengolpares.github.io/TareaMaster/Logo%20Web%20Google.png",
       "description": "Gestor de tareas gratuito para organizar tu día a día"
     }
     </script>
@@ -35,10 +35,10 @@
         <h1>Lista de tareas</h1>
         <input type="text" id="taskInput" placeholder="Nueva tarea...">
         <select id="prioritySelect" class="priority-select">
-            <option value="" selected>Seleccionar Prioidad</option>
+            <option value="" selected>Seleccionar Prioridad</option>
             <option value="alta" data-icon="fas fa-exclamation-circle">Alta</option>
-            <option value="mitjana" data-icon="fas fa-exclamation-triangle">Mitjana</option>
-            <option value="baixa" data-icon="fas fa-check-circle">Baixa</option>
+            <option value="mitjana" data-icon="fas fa-exclamation-triangle">Media</option>
+            <option value="baixa" data-icon="fas fa-check-circle">Baja</option>
         </select>
         <input type="date" id="taskDate" class="date-input" placeholder="dd/mm/aaaa" onfocus="(this.type='date')" onblur="(this.type='text')">
         <button id="addTaskBtn">Añadir tarea</button>
@@ -52,6 +52,6 @@
         <i class="fas fa-moon"></i>
     </button>
 
-    <script src="script.js"></script>
+    <script src="script.js" defer></script>
 </body>
 </html>
