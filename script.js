@@ -5,6 +5,10 @@ document.addEventListener('DOMContentLoaded', function () {
     const themeToggle = document.getElementById('themeToggle');
     const body = document.body;
     const prioritySelect = document.getElementById('prioritySelect');
+    const settingsBtn = document.getElementById('settingsBtn');
+    const settingsMenu = document.getElementById('settingsMenu');
+    const clearAllTasksBtn = document.getElementById('clearAllTasksBtn');
+
 
     // Carrega el tema desat a localStorage
     const savedTheme = localStorage.getItem('theme');
@@ -55,8 +59,7 @@ document.addEventListener('DOMContentLoaded', function () {
             if (task.priority) {
                 const priorityIcon = document.createElement('i');
                 priorityIcon.className = task.priority === 'alta' ? 'fas fa-exclamation-circle' :
-                                         task.priority === 'mitjana' ? 'fas fa-exclamation-triangle' :
-                                         'fas fa-check-circle';
+                task.priority === 'mitjana' ? 'fas fa-exclamation-triangle' : 'fas fa-check-circle';
                 li.appendChild(priorityIcon);
             }
     
@@ -244,6 +247,30 @@ document.addEventListener('DOMContentLoaded', function () {
         tasks = updatedTasks;
         saveTasks();
     }
+    // --- Funcionalidad del botón de ajustes y menú ---
+
+    // Mostrar/ocultar el menú de ajustes al hacer clic en el botón
+    settingsBtn.addEventListener('click', function(event) {
+        settingsMenu.classList.toggle('active');
+        event.stopPropagation(); // Evita que el clic se propague al documento
+    });
+
+    // Ocultar el menú de ajustes si se hace clic fuera de él
+    document.addEventListener('click', function(event) {
+        if (!settingsMenu.contains(event.target) && !settingsBtn.contains(event.target)) {
+            settingsMenu.classList.remove('active');
+        }
+    });
+
+    // Eliminar todas las tareas
+    clearAllTasksBtn.addEventListener('click', function() {
+        if (confirm('¿Estás seguro de que quieres eliminar TODAS las tareas pendientes? Esta acción no se puede deshacer.')) {
+            tasks = []; // Vacía el array de tareas
+            saveTasks(); // Guarda el estado vacío en localStorage
+            renderTasks(); // Vuelve a renderizar para mostrar la lista vacía
+            settingsMenu.classList.remove('active'); // Oculta el menú después de la acción
+        }
+    });
 });
 
 // En el DOMContentLoaded, añade:
