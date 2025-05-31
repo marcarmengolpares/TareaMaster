@@ -661,3 +661,131 @@ button.edit-btn, button.delete-btn {
     top: -5px; /* Lo sube ligeramente */
     margin-bottom: -2px; /* Compensa el desplazamiento */
 }
+
+/* --- Estilos para el botón de ajustes y el menú --- */
+
+.settings-container {
+    position: fixed; /* Fija el contenedor en la pantalla */
+    bottom: 70px; /* Distancia desde la parte inferior */
+    right: 40px; /* Distancia desde la parte derecha */
+    z-index: 1000; /* Asegura que esté por encima de otros elementos */
+}
+
+.settings-button {
+    background-color: #6a11cb; /* Color de fondo del botón */
+    color: white; /* Color del icono */
+    border: none; /* Sin borde */
+    border-radius: 50%; /* Lo hace redondo */
+    width: 50px; /* Ancho del botón */
+    height: 50px; /* Alto del botón */
+    font-size: 24px; /* Tamaño del icono */
+    display: flex; /* Para centrar el icono */
+    justify-content: center; /* Centra horizontalmente */
+    align-items: center; /* Centra verticalmente */
+    cursor: pointer; /* Cambia el cursor a una mano al pasar por encima */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2); /* Sombra para un efecto 3D */
+    transition: background-color 0.3s ease, transform 0.3s ease; /* Transición suave */
+    outline: none; /* ¡Esta es la línea clave para eliminar el contorno! */
+}
+
+
+.settings-button:hover {
+    background-color: #0056b3; /* Color de fondo al pasar el ratón */
+    transform: rotate(45deg); /* Gira el icono al pasar el ratón */
+}
+
+.settings-menu {
+    display: none; /* Oculto por defecto */
+    position: absolute; /* Posicionamiento absoluto respecto al contenedor */
+    bottom: 60px; /* Un poco por encima del botón */
+    right: 0; /* Alineado a la derecha del botón */
+    background-color: white; /* Fondo del menú */
+    border-radius: 8px; /* Bordes redondeados */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* Sombra más pronunciada */
+    padding: 10px; /* Espaciado interno */
+    min-width: 200px; /* Ancho mínimo del menú */
+    transform-origin: bottom right; /* Punto de origen para la transformación */
+    animation: fadeInScale 0.3s ease-out forwards; /* Animación de aparición */
+}
+
+/* Animación para que el menú aparezca */
+@keyframes fadeInScale {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+
+.settings-menu.active {
+    display: block; /* Muestra el menú cuando tiene la clase 'active' */
+}
+
+.clear-all-button {
+    background-color: #dc3545; /* Color rojo para indicar peligro */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 15px;
+    width: 100%; /* Ocupa todo el ancho del menú */
+    text-align: left; /* Alinea el texto a la izquierda */
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    font-size: 16px;
+}
+
+.clear-all-button:hover {
+    background-color: #c82333; /* Color más oscuro al pasar el ratón */
+}
+
+/* --- Adaptaciones para el tema oscuro (si lo tienes implementado) --- */
+body.dark-mode .settings-button {
+    background-color: #555; /* Color del botón en modo oscuro */
+    color: #eee;
+}
+
+body.dark-mode .settings-button:hover {
+    background-color: #777;
+}
+
+body.dark-mode .settings-menu {
+    background-color: #333; /* Color del menú en modo oscuro */
+    color: #eee;
+}
+
+body.dark-mode .clear-all-button {
+    background-color: #a02c3c; /* Color del botón de limpiar en modo oscuro */
+}
+
+body.dark-mode .clear-all-button:hover {
+    background-color: #8a2533;
+}
+
+/* --- Adaptaciones para el tema oscuro del botón de ajustes y menú --- */
+[data-theme="dark"] .settings-button {
+    background-color: var(--button-bg); /* Usa la variable de botón para el modo oscuro */
+    color: var(--text-color); /* Usa la variable de texto para el modo oscuro */
+}
+
+[data-theme="dark"] .settings-button:hover {
+    background-color: var(--button-hover-bg); /* Usa la variable de hover para el modo oscuro */
+}
+
+[data-theme="dark"] .settings-menu {
+    background-color: var(--container-bg); /* Usa la variable de fondo del contenedor */
+    color: var(--text-color); /* Usa la variable de texto */
+    box-shadow: 0 4px 15px rgba(255, 255, 255, 0.1); /* Ajusta la sombra para el modo oscuro */
+}
+
+[data-theme="dark"] .clear-all-button {
+    background-color: #a02c3c; /* Un rojo oscuro para el botón de borrar */
+    color: #eee; /* Texto más claro */
+}
+
+[data-theme="dark"] .clear-all-button:hover {
+    background-color: #8a2533; /* Un rojo aún más oscuro al pasar el ratón */
+}
