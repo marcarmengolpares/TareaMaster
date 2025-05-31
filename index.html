@@ -15,12 +15,12 @@
     <link rel="stylesheet" href="styles.css">
     <script type="application/ld+json">
     {
-      "@context": "https://schema.org",
-      "@type": "WebSite",
-      "name": "TareaMaster",
-      "url": "https://marcarmengolpares.github.io/TareaMaster/",
-      "logo": "https://marcarmengolpares.github.io/TareaMaster/Logo%20Web%20Google.png",
-      "description": "Gestor de tareas gratuito para organizar tu día a día"
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "TareaMaster",
+    "url": "https://marcarmengolpares.github.io/TareaMaster/",
+    "logo": "https://marcarmengolpares.github.io/TareaMaster/Logo%20Web%20Google.png",
+    "description": "Gestor de tareas gratuito para organizar tu día a día"
     }
     </script>
 </head>
@@ -42,7 +42,7 @@
         </select>
         <input type="date" id="taskDate" class="date-input" placeholder="dd/mm/aaaa" onfocus="(this.type='date')" onblur="(this.type='text')">
         <button id="addTaskBtn">Añadir tarea</button>
-         <!-- Afegir l'indicador de caràcters -->
+        <!-- Afegir l'indicador de caràcters -->
         <div id="charCounter" class="char-counter">0/24</div>
         <ul id="taskList"></ul>
     </div>
@@ -51,6 +51,15 @@
     <button id="themeToggle" class="theme-toggle">
         <i class="fas fa-moon"></i>
     </button>
+
+    <div class="settings-container">
+        <button id="settingsBtn" class="settings-button">
+            <i class="fas fa-cog"></i>
+        </button>
+        <div id="settingsMenu" class="settings-menu">
+            <button id="clearAllTasksBtn" class="clear-all-button">Eliminar todas las tareas</button>
+        </div>
+    </div>
 
     <script src="script.js" defer></script>
 </body>
