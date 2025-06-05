@@ -10,7 +10,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="google-site-verification" content="u1wWfft0l5oMO0w0hfADQEXD42VuQHk9Th0e_sd_QAo" />
-    <title>TareaMaster - Gestor de tareas</title>
+    <title>TareaMaster - Gestor de tasques</title>
     <link rel="icon" type="image/x-icon" href="LOGOINTERFAZ.png">
     <link rel="stylesheet" href="styles.css">
     <script type="application/ld+json">
@@ -57,6 +57,9 @@
             <i class="fas fa-cog"></i>
         </button>
         <div id="settingsMenu" class="settings-menu">
+            <button id="toggleNotificationsBtn" class="settings-option-button">
+                <i class="fas fa-bell"></i> Notificaciones <span id="notificationStatus" class="status-indicator">OFF</span>
+            </button>
             <button id="clearAllTasksBtn" class="clear-all-button">Eliminar todas las tareas</button>
         </div>
     </div>
@@ -64,3 +67,4 @@
     <script src="script.js" defer></script>
 </body>
 </html>
+
