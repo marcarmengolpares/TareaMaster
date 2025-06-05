@@ -789,3 +789,61 @@ body.dark-mode .clear-all-button:hover {
 [data-theme="dark"] .clear-all-button:hover {
     background-color: #8a2533; /* Un rojo aún más oscuro al pasar el ratón */
 }
+
+/* Estilos para las opciones dentro del menú de ajustes (e.g., Notificaciones) */
+.settings-option-button {
+    background-color: #6c757d; /* Un color neutro como el gris */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 15px;
+    width: 100%;
+    text-align: left;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    font-size: 16px;
+    margin-bottom: 8px; /* Espacio debajo de este botón */
+    display: flex; /* Para alinear el icono y el texto */
+    align-items: center;
+    justify-content: space-between; /* Para empujar el status a la derecha */
+}
+
+.settings-option-button i {
+    margin-right: 10px; /* Espacio entre el icono y el texto */
+}
+
+.settings-option-button:hover {
+    background-color: #5a6268; /* Gris más oscuro al pasar el ratón */
+}
+
+/* Indicador de estado ON/OFF */
+.status-indicator {
+    background-color: #dc3545; /* Rojo para OFF */
+    color: white;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.status-indicator.active {
+    background-color: #28a745; /* Verde para ON */
+}
+
+/* --- Adaptaciones para el tema oscuro (para el nuevo botón) --- */
+[data-theme="dark"] .settings-option-button {
+    background-color: #555;
+    color: #eee;
+}
+
+[data-theme="dark"] .settings-option-button:hover {
+    background-color: #777;
+}
+
+[data-theme="dark"] .status-indicator {
+    background-color: #a02c3c; /* Rojo oscuro para OFF en dark mode */
+}
+
+[data-theme="dark"] .status-indicator.active {
+    background-color: #1e7e34; /* Verde oscuro para ON en dark mode */
+}
