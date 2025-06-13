@@ -25,12 +25,10 @@
     </script>
 </head>
 <body>
-    <!-- Logo a dalt a l'esquerra -->
     <div class="logo-container">
         <img src="Logo Web.png" alt="Logo de la web" class="logo">
     </div>
 
-    <!-- Contenidor de tasques -->
     <div class="container">
         <h1>Lista de tareas</h1>
         <input type="text" id="taskInput" placeholder="Nueva tarea...">
@@ -42,12 +40,10 @@
         </select>
         <input type="date" id="taskDate" class="date-input" placeholder="dd/mm/aaaa" onfocus="(this.type='date')" onblur="(this.type='text')">
         <button id="addTaskBtn">Añadir tarea</button>
-        <!-- Afegir l'indicador de caràcters -->
         <div id="charCounter" class="char-counter">0/24</div>
         <ul id="taskList"></ul>
     </div>
 
-    <!-- Botó de canviar estil (abaix a l'esquerra) -->
     <button id="themeToggle" class="theme-toggle">
         <i class="fas fa-moon"></i>
     </button>
@@ -57,6 +53,16 @@
             <i class="fas fa-cog"></i>
         </button>
         <div id="settingsMenu" class="settings-menu">
+            <div class="dropdown-sort">
+                <button class="settings-option-button dropdown-toggle">
+                    <i class="fas fa-sort"></i> Ordenar por <i class="fas fa-caret-down"></i>
+                </button>
+                <div class="dropdown-content">
+                    <button id="sortByPriority" class="settings-option-button">Prioridad</button>
+                    <button id="sortByDate" class="settings-option-button">Fecha</button>
+                    <button id="sortByCreation" class="settings-option-button">Orden de Creación</button>
+                </div>
+            </div>
             <button id="toggleNotificationsBtn" class="settings-option-button">
                 <i class="fas fa-bell"></i> Notificaciones <span id="notificationStatus" class="status-indicator">OFF</span>
             </button>
@@ -64,6 +70,9 @@
         </div>
     </div>
 
+    <script src="script.js" defer></script>
+</body>
+</html>
     <script src="script.js" defer></script>
 </body>
 </html>
