@@ -85,10 +85,10 @@ ul {
 
 /* Amplada dels elements de la llista (tasques) */
 li {
-    padding: 8px 10px; /* Aumenta el padding para más espacio interno */
+    padding: 10px 15px; /* Aumenta el padding para más espacio interno */
     background-color: #f8f9fa;
     border: 1px solid #ddd;
-    border-radius: 6px;
+    border-radius: 8px;
     margin-bottom: 8px;
     display: flex;
     justify-content: space-between;
@@ -98,6 +98,7 @@ li {
     word-break: break-word; /* Permite que el texto se divida en varias líneas */
     white-space: normal; /* Permite saltos de línea */
     min-height: 40px; /* Altura mínima para asegurar espacio */
+    flex-wrap: wrap;
 }
 
 li:hover {
@@ -153,6 +154,20 @@ li .edit-btn {
     margin-right: 5px;
 }
 
+/* Estilos específicos para los elementos en modo edición */
+li .edit-input,
+li .priority-select,
+li .date-input {
+    flex-grow: 1; /* Permitir que los inputs crezcan para ocupar espacio */
+    margin-right: 10px; /* Espacio a la derecha de cada input/select */
+    padding: 8px; /* Más padding dentro de los inputs */
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1em;
+    min-width: 120px; /* Ancho mínimo para que no se contraigan demasiado */
+    margin-bottom: 5px; /* Espacio debajo de los inputs en modo edición */
+}
+
 .edit-form {
     display: flex;
     align-items: flex-start; /* Alinea todos los elementos */
@@ -180,10 +195,12 @@ li .save-btn {
     border: none;
     border-radius: 4px;
     height: 38px; /* Igual que el selector */
-    padding: 6px 14px;
+    padding: 10px 15px;
     cursor: pointer;
     transition: background-color 0.3s ease, transform 0.2s ease;
-    margin-right: 5px;
+    font-size: 1em;
+    margin-left: 10px; /* Espacio a la izquierda del botón guardar */
+    margin-bottom: 5px;
     min-width: 80px;
     white-space: nowrap; /* Evita saltos de línea */
 
@@ -297,6 +314,7 @@ li:hover {
     --border-color: #444;
     --button-bg: #bb86fc;
     --button-hover-bg: #883fe2;
+    box-shadow: 0 2px 5px rgba(255, 255, 255, 0.1);
 }
 
 /* Estils generals */
@@ -562,6 +580,7 @@ h1 {
     width: 100%;
     padding: 8px;
     margin-bottom: 10px;
+    flex-basis: 100%; 
     border: 2px solid var(--border-color);
     border-radius: 6px;
     font-size: 14px;
@@ -593,14 +612,21 @@ h1 {
 /* Ajusta el contenedor de botones */
 .button-container {
     display: flex;
-    gap: 4px; /* Espacio entre botones */
+    gap: 5px; /* Espacio entre botones */
     flex-shrink: 0; /* Evita que los botones se compriman */
     min-width: 150px; /* Espacio mínimo para los botones */
+    margin-left: auto;
     justify-content: flex-end; /* Alinea a la derecha */
     align-items: center; /* Alineación vertical con otros elementos */
     height: 38px; /* Misma altura que los inputs */
 
 
+}
+
+/* Asegurarse de que los iconos de prioridad también se alineen */
+li > i.fas {
+    margin-right: 10px;
+    flex-shrink: 0; /* Evita que el icono se encoja */
 }
 
 /* Ajusta el estilo del texto de la tarea */
@@ -609,7 +635,37 @@ li span {
     margin: 0 10px; /* Añade margen a los lados */
     text-align: left; /* Alinea el texto a la izquierda */
     max-width: calc(100% - 120px); /* Limita el ancho para dejar espacio a los botones */
+    margin-right: 10px;
+    word-break: break-word; /* Para que el texto largo se rompa y no desborde */
 }
+
+/* Responsividad para la edición en pantallas pequeñas */
+@media (max-width: 600px) {
+    li {
+        flex-direction: column; /* Apilar elementos verticalmente en pantallas pequeñas */
+        align-items: flex-start; /* Alinear a la izquierda cuando están apilados */
+    }
+
+    li .edit-input,
+    li .priority-select,
+    li .date-input,
+    li .save-btn {
+        width: 100%; /* Ocupar todo el ancho disponible */
+        margin-right: 0; /* Eliminar margen derecho */
+        margin-bottom: 10px; /* Más espacio entre elementos apilados */
+    }
+
+    li .save-btn {
+        margin-left: 0; /* Eliminar margen izquierdo */
+    }
+
+    li .button-container {
+        width: 100%;
+        justify-content: flex-start; /* Alinear los botones a la izquierda */
+        margin-top: 10px; /* Espacio encima del contenedor de botones */
+    }
+}
+
 
 /* Estilo para el contenedor de inputs */
 .input-group {
@@ -646,7 +702,7 @@ li span {
 
 button.edit-btn, button.delete-btn {
     padding: 4px 8px; /* Ajuste de padding */
-    font-size: 12px; /* Tamaño de fuente igualado */
+    font-size: 1.1em; /* Tamaño de fuente igualado */
 }
 
 .edit-mode .save-btn {
@@ -846,4 +902,278 @@ body.dark-mode .clear-all-button:hover {
 
 [data-theme="dark"] .status-indicator.active {
     background-color: #1e7e34; /* Verde oscuro para ON en dark mode */
+}
+
+/* --- Nuevos estilos para el desplegable de ordenación --- */
+.dropdown-sort {
+    position: relative; /* Contenedor para el menú desplegable */
+    margin-bottom: 8px; /* Espacio debajo del botón principal de ordenación */
+}
+
+.dropdown-sort .dropdown-toggle {
+    /* Hereda estilos de .settings-option-button, pero añade un caret */
+    display: flex;
+    justify-content: space-between; /* Espacia el texto y el icono de la flecha */
+    align-items: center;
+    background-color: #6c757d; /* Color neutro */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 15px;
+    width: 100%;
+    text-align: left;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    font-size: 16px;
+}
+
+.dropdown-sort .dropdown-toggle:hover {
+    background-color: #5a6268; /* Gris más oscuro al pasar el ratón */
+}
+
+.dropdown-sort .dropdown-toggle i:first-child { /* Icono de ordenación */
+    margin-right: 10px;
+}
+
+.dropdown-sort .dropdown-toggle .fa-caret-down { /* Icono de flecha hacia abajo */
+    margin-left: auto; /* Empuja la flecha a la derecha */
+}
+
+.dropdown-content {
+    display: none; /* Oculto por defecto */
+    position: absolute; /* Posicionado absolutamente dentro de .dropdown-sort */
+    background-color: white; /* Fondo del desplegable */
+    min-width: 100%; /* Ocupa el ancho del botón padre */
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1; /* Asegura que esté por encima de otros elementos */
+    border-radius: 5px;
+    padding: 5px 0; /* Pequeño padding vertical */
+    top: 100%; /* Se posiciona justo debajo del botón principal */
+    left: 0;
+    margin-top: 5px; /* Pequeño espacio entre el botón y el desplegable */
+    animation: fadeInScale 0.2s ease-out forwards; /* Animación más rápida */
+}
+
+.dropdown-content.active {
+    display: block; /* Muestra el contenido cuando tiene la clase 'active' */
+}
+
+.dropdown-content .settings-option-button {
+    background-color: transparent; /* Sin fondo para las opciones del desplegable */
+    color: #333; /* Texto oscuro por defecto */
+    padding: 10px 15px;
+    text-decoration: none;
+    display: block;
+    border-radius: 0; /* Sin bordes redondeados en las esquinas interiores */
+    justify-content: flex-start; /* Alinea el texto a la izquierda */
+    margin-bottom: 0; /* Elimina el margen inferior entre las opciones */
+}
+
+.dropdown-content .settings-option-button:hover {
+    background-color: #f1f1f1; /* Fondo gris claro al pasar el ratón */
+}
+
+/* --- Adaptaciones para el tema oscuro del desplegable de ordenación --- */
+[data-theme="dark"] .dropdown-sort .dropdown-toggle {
+    background-color: #555; /* Color del botón en modo oscuro */
+    color: #eee;
+}
+
+[data-theme="dark"] .dropdown-sort .dropdown-toggle:hover {
+    background-color: #777;
+}
+
+[data-theme="dark"] .dropdown-content {
+    background-color: #444; /* Fondo del desplegable en modo oscuro */
+    box-shadow: 0px 8px 16px 0px rgba(255,255,255,0.1);
+}
+
+[data-theme="dark"] .dropdown-content .settings-option-button {
+    color: #eee; /* Texto claro en modo oscuro */
+}
+
+[data-theme="dark"] .dropdown-content .settings-option-button:hover {
+    background-color: #666; /* Fondo gris oscuro al pasar el ratón */
+}
+
+/* --- Estilos para los nuevos modales de alerta y confirmación --- */
+.custom-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Fondo semitransparente oscuro */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000; /* Asegura que esté por encima de todo */
+}
+
+.custom-modal-content {
+    background-color: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    text-align: center;
+    max-width: 400px;
+    width: 90%;
+    animation: fadeInModal 0.3s ease-out; /* Animación de aparición del modal */
+}
+
+.custom-modal-content p {
+    margin-bottom: 20px;
+    font-size: 1.1em;
+    color: #333;
+}
+
+.custom-modal-ok-btn,
+.custom-modal-confirm-btn,
+.custom-modal-cancel-btn {
+    background-color: #007bff; /* Azul para OK/Confirmar */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    margin: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.custom-modal-ok-btn:hover,
+.custom-modal-confirm-btn:hover {
+    background-color: #0056b3;
+}
+
+.custom-modal-cancel-btn {
+    background-color: #6c757d; /* Gris para Cancelar */
+}
+
+.custom-modal-cancel-btn:hover {
+    background-color: #5a6268;
+}
+
+.modal-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px; /* Espacio entre los botones */
+}
+
+/* Animación para la aparición del modal */
+@keyframes fadeInModal {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* --- Adaptaciones para el tema oscuro de los modales --- */
+[data-theme="dark"] .custom-modal-content {
+    background-color: #333;
+    color: #eee;
+    box-shadow: 0 5px 15px rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="dark"] .custom-modal-content p {
+    color: #eee;
+}
+
+[data-theme="dark"] .custom-modal-ok-btn,
+[data-theme="dark"] .custom-modal-confirm-btn {
+    background-color: #6a11cb; /* Tu color principal en modo oscuro */
+}
+
+[data-theme="dark"] .custom-modal-ok-btn:hover,
+[data-theme="dark"] .custom-modal-confirm-btn:hover {
+    background-color: #7a22dc;
+}
+
+[data-theme="dark"] .custom-modal-cancel-btn {
+    background-color: #555;
+}
+
+[data-theme="dark"] .custom-modal-cancel-btn:hover {
+    background-color: #777;
+}
+
+/* --- Estilos para los iconos en los botones de tarea (Completar, Editar, Eliminar) --- */
+.complete-btn, .edit-btn, .delete-btn {
+    background: none;
+    border: none;
+    font-size: 1.1em; /* Ajusta el tamaño de los iconos */
+    cursor: pointer;
+    margin-left: 5px; /* Espacio entre botones */
+    transition: color 0.2s ease;
+    padding: 5px; /* Añade un poco de padding para facilitar el clic */
+    border-radius: 3px;
+}
+
+.complete-btn {
+    color: #28a745; /* Verde para completar */
+}
+
+.complete-btn:hover {
+    color: #218838;
+    background-color: rgba(40, 167, 69, 0.1); /* Fondo suave al pasar el ratón */
+}
+
+.edit-btn {
+    color: #f5eeee; /* Azul para editar */
+}
+
+.edit-btn:hover {
+    color: #f5eeee;
+    background-color: rgba(0, 123, 255, 0.1);
+}
+
+.delete-btn {
+    color: #dc3545; /* Rojo para eliminar */
+}
+
+.delete-btn:hover {
+    color: #c82333;
+    background-color: rgba(220, 53, 69, 0.1);
+}
+
+/* --- Adaptaciones para el tema oscuro de los botones de tarea --- */
+[data-theme="dark"] .complete-btn {
+    color: #2bd754; /* Verde más brillante en dark mode */
+}
+[data-theme="dark"] .complete-btn:hover {
+    color: #1ea03a;
+    background-color: rgba(43, 215, 84, 0.1);
+}
+
+[data-theme="dark"] .edit-btn {
+    color: #443c3c; /* Azul más brillante en dark mode */
+}
+[data-theme="dark"] .edit-btn:hover {
+    color: #443c3c;
+    background-color: rgba(109, 175, 251, 0.1);
+}
+
+[data-theme="dark"] .delete-btn {
+    color: #e06c75; /* Rojo más suave en dark mode */
+}
+[data-theme="dark"] .delete-btn:hover {
+    color: #c84c55;
+    background-color: rgba(224, 108, 117, 0.1);
+}
+
+/* Estilo para el contador de caracteres al editar */
+.edit-char-counter {
+    font-size: 0.8em;
+    color: #666;
+    margin-top: -5px; /* Ajusta la posición */
+    margin-bottom: 5px;
+    text-align: right;
+}
+
+[data-theme="dark"] .edit-char-counter {
+    color: #bbb;
 }
