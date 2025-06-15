@@ -656,3 +656,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Renderiza las tareas iniciales al cargar la página
     renderTasks();
 });
+
+    // Renderiza las tareas iniciales al cargar la página
+    renderTasks();
+});
