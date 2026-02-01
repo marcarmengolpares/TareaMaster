@@ -302,7 +302,7 @@ li:hover {
     --text-color: #333333; /* Color del text en mode clar */
     --container-bg: #f8f9fa;
     --border-color: #ddd;
-    --button-bg: #6a11cb;
+    --button-bg: #cb11c2;
     --button-hover-bg: #4079dc;
 }
 
@@ -728,7 +728,7 @@ button.edit-btn, button.delete-btn {
 }
 
 .settings-button {
-    background-color: #6a11cb; /* Color de fondo del botón */
+    background-color: #cb11c2; /* Color de fondo del botón */
     color: white; /* Color del icono */
     border: none; /* Sin borde */
     border-radius: 50%; /* Lo hace redondo */
