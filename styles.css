@@ -49,14 +49,14 @@ h1 {
 }
 
 #taskInput:focus {
-    border-color: #6a11cb;
+    border-color: #cb11c2;
     outline: none;
 }
 
 #addTaskBtn {
     width: 100%;
     padding: 8px 10px; 
-    background-color: #6a11cb;
+    background-color: #cb11c2;
     color: #fff;
     border: none;
     border-radius: 6px;
