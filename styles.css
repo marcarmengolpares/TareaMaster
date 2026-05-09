@@ -1,1179 +1,1095 @@
-body {
-    font-family: 'Arial', sans-serif;
-    background: linear-gradient(135deg, #cb11c2, #42fc25);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    margin: 0;
-    color: #333;
-}
-
-/* Amplada del contenidor de tasques */
-.container {
-    background-color: #ffffff86;
-    padding: 50px;
-    border-radius: 12px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-    width: 700px; /* Amplada més gran (abans era 400px) */
-    animation: fadeIn 0.5s ease-in-out;
-}
-
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(-20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-h1 {
-    text-align: center;
-    margin-bottom: 20px;
-    font-size: 24px;
-    color: #444;
-}
-
-#taskInput {
-    width: calc(100% - 22px);
-    padding: 8px 10px;
-    margin-bottom: 15px;
-    border: 2px solid #ddddddd4;
-    border-radius: 6px;
-    font-size: 14px;
-    height: 38px; 
-    transition: border-color 0.3s ease;
-}
-
-#taskInput:focus {
-    border-color: #cb11c2;
-    outline: none;
-}
-
-#addTaskBtn {
-    width: 100%;
-    padding: 8px 10px; 
-    background-color: #cb11c2;
-    color: #ffffff8a;
-    border: none;
-    border-radius: 6px;
-    height: 38px;
-    font-size: 14px;
-    cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-    margin-top: 8px; /* Espacio superior igual al inferior */
-
-}
-
-#addTaskBtn:hover {
-    background-color: #42fc25;
-    transform: scale(1.05);
-}
-
-#addTaskBtn:active {
-    transform: scale(0.95);
-}
-
-ul {
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
-}
-
-/* Amplada dels elements de la llista (tasques) */
-li {
-    padding: 10px 15px; /* Aumenta el padding para más espacio interno */
-    background-color: #ffffff86;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    margin-bottom: 8px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-    width: 100%;
-    word-break: break-word; /* Permite que el texto se divida en varias líneas */
-    white-space: normal; /* Permite saltos de línea */
-    min-height: 40px; /* Altura mínima para asegurar espacio */
-    flex-wrap: wrap;
-}
-
-li:hover {
-    background-color: #e9ecef;
-    transform: translateX(5px);
-}
-
-li button {
-    background-color: #dc3545;
-    color: #ffffff86;
-    border: none;
-    border-radius: 4px;
-    padding: 6px 12px;
-    cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-}
-
-li button:hover {
-    background-color: #c82333;
-    transform: scale(1.1);
-}
-
-li button:active {
-    transform: scale(0.9);
-}
-
-/* Estilo para el checkbox */
-li input[type="checkbox"] {
-    margin-right: 10px;
-    cursor: pointer;
-}
-
-/* Estilo para las tareas completadas */
-li.completed {
-    text-decoration: line-through;
-    color: #6c757d;
-    background-color: #e2e3e5;
-}
-
-li.completed:hover {
-    background-color: #d6d8db;
-}
-
-/* Estilo del botón "Editar" */
-li .edit-btn {
-    background-color: #28a745; /* Verde */
-    color: #fff; /* Texto blanco */
-    border: none;
-    border-radius: 4px;
-    padding: 6px 12px;
-    cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-    margin-right: 5px;
-}
-
-/* Estilos específicos para los elementos en modo edición */
-li .edit-input,
-li .priority-select,
-li .date-input {
-    flex-grow: 1; /* Permitir que los inputs crezcan para ocupar espacio */
-    margin-right: 10px; /* Espacio a la derecha de cada input/select */
-    padding: 8px; /* Más padding dentro de los inputs */
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 1em;
-    min-width: 120px; /* Ancho mínimo para que no se contraigan demasiado */
-    margin-bottom: 5px; /* Espacio debajo de los inputs en modo edición */
-}
-
-.edit-form {
-    display: flex;
-    align-items: flex-start; /* Alinea todos los elementos */
-    gap: 8px; /* Espacio consistente */
-}
-
-.edit-form .save-btn {
-    align-self: center; /* Centra solo este elemento verticalmente */
-    margin-top: -1; /* Elimina cualquier desalineación */
-}
-
-li .edit-btn:hover {
-    background-color: #218838; /* Verde más oscuro en hover */
-    transform: scale(1.1);
-}
-
-li .edit-btn:active {
-    transform: scale(0.9);
-}
-
-/* Estilo del botón "Guardar" */
-li .save-btn {
-    background-color: #17a2b8; /* Azul claro */
-    color: #fff; /* Texto blanco */
-    border: none;
-    border-radius: 4px;
-    height: 38px; /* Igual que el selector */
-    padding: 10px 15px;
-    cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-    font-size: 1em;
-    margin-left: 10px; /* Espacio a la izquierda del botón guardar */
-    margin-bottom: 5px;
-    min-width: 80px;
-    white-space: nowrap; /* Evita saltos de línea */
-
-}
-
-.save-btn {
-    height: 38px; /* Misma altura que el selector */
-    padding: 0 12px; /* Ajuste horizontal */
-    line-height: 38px; /* Centrado vertical */
-    min-width: 80px;
-    display: inline-flex;
-    align-items: center; /* Centrado vertical */
-    justify-content: center; /* Centrado horizontal */
-    line-height: normal; /* Resetear si estaba definido */
-    margin-top: 0; /* Eliminar márgenes que desalineen */
-
-
-}
-
-li .save-btn:hover {
-    background-color: #138496; /* Azul más oscuro en hover */
-    transform: scale(1.1);
-}
-
-li .save-btn:active {
-    transform: scale(0.9);
-
-/* Estilos para el header (logo y título) */
-.header {
-    display: flex;
-    align-items: center; /* Alinea el logo y el título verticalmente */
-    justify-content: center; /* Centra el contenido horizontalmente */
-    margin-bottom: 20px;
-}
-
-/* Estilos para el logo */
-.logo {
-    width: 50px; /* Ajusta el tamaño del logo */
-    height: auto; /* Mantiene la proporción de la imagen */
-    margin-right: 10px; /* Espacio entre el logo y el título */
-}
-
-/* Estilos para el título */
-h1 {
-    margin: 0; /* Elimina el margen predeterminado */
-    font-size: 24px;
-    color: #444;
-}
-}
-
-/* Estil per a l'element fantasma (durant l'arrossegament) */
-.ghost {
-    opacity: 0.5;
-    background-color: #f0f0f0;
-}
-
-/* Estil per a les tasques */
-li {
-    cursor: grab; /* Canvia el cursor per indicar que es pot arrossegar */
-    user-select: none; /* Evita que el text es seleccioni durant l'arrossegament */
-}
-
-li:active {
-    cursor: grabbing; /* Canvia el cursor quan s'està arrossegant */
-}
-
-/* Estil per a l'icona de punts verticals */
-.drag-handle {
-    cursor: grab; /* Canvia el cursor per indicar que es pot arrossegar */
-    margin-right: 10px; /* Espai entre l'icona i el text */
-    color: #666; /* Color de l'icona */
-}
-
-.drag-handle:active {
-    cursor: grabbing; /* Canvia el cursor quan s'està arrossegant */
-}
-
-/* Estil per a les tasques */
-li {
-    padding: 12px;
-    background-color: var(--container-bg);
-    border: 1px solid var(--border-color);
-    border-radius: 6px;
-    margin-bottom: 8px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-    color: var(--text-color); /* Color del text de les tasques */
-}
-
-li:hover {
-    background-color: var(--button-hover-bg);
-    transform: translateX(5px);
-}
-/* Variables per al mode clar */
-:root {
-    --background-color: #ffffff;
-    --text-color: #333333; /* Color del text en mode clar */
-    --container-bg: #f8f9fa;
-    --border-color: #ddd;
-    --button-bg: #cb11c2;
-    --button-hover-bg: #4079dc;
-}
-
-/* Variables per al mode fosc */
-[data-theme="dark"] {
-    --background-color: #121212;
-    --text-color: #ffffff; /* Color del text en mode fosc */
-    --container-bg: #1e1e1e;
-    --border-color: #444;
-    --button-bg: #bb86fc;
-    --button-hover-bg: #883fe2;
-    box-shadow: 0 2px 5px rgba(255, 255, 255, 0.1);
-}
-
-/* Estils generals */
-body {
-    background-color: var(--background-color);
-    color: var(--text-color);
-    font-family: 'Arial', sans-serif;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    margin: 0;
-    transition: background-color 0.3s ease, color 0.3s ease;
-}
-
-.container {
-    background-color: var(--container-bg);
-    padding: 20px;
-    border-radius: 12px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-    width: 350px;
-    transition: background-color 0.3s ease;
-}
-
-h1 {
-    text-align: center;
-    margin-bottom: 20px;
-    font-size: 24px;
-    color: var(--text-color);
-}
-
-#taskInput {
-    width: calc(100% - 22px);
-    padding: 12px;
-    margin-bottom: 8px;
-    border: 2px solid var(--border-color);
-    border-radius: 6px;
-    font-size: 16px;
-    background-color: var(--container-bg);
-    color: var(--text-color);
-    transition: border-color 0.3s ease, background-color 0.3s ease, color 0.3s ease;
-}
-
-#taskInput:focus {
-    border-color: var(--button-bg);
-    outline: none;
-}
-
-#addTaskBtn {
-    width: 100%;
-    padding: 12px;
-    background-color: var(--button-bg);
-    color: #fff;
-    border: none;
-    border-radius: 6px;
-    font-size: 16px;
-    cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-    margin-bottom: 20px;
-}
-
-#addTaskBtn:hover {
-    background-color: var(--button-hover-bg);
-    transform: scale(1.05);
-}
-
-#addTaskBtn:active {
-    transform: scale(0.95);
-}
-
-/* Estil del botó de canvi de mode */
-.theme-toggle {
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-size: 100px;
-    color: var(--text-color);
-    transition: color 0.3s ease;
-}
-
-.theme-toggle:hover {
-    color: var(--button-bg);
-}
-
-/* Estil del botó de canviar estil */
-.theme-toggle {
-    position: fixed; /* Fixa el botó a la pantalla */
-    bottom: 80px; /* Distància des de la part inferior */
-    left: 50px; /* Distància des de l'esquerra */
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-size: 30px;
-    color: var(--text-color);
-    transition: color 0.3s ease;
-    z-index: 1000; /* Assegura que el botó estigui per sobre d'altres elements */
-}
-
-.theme-toggle:hover {
-    color: var(--button-bg);
-}
-
-.logo-container {
-    position: absolute; /* Posicionament absolut per col·locar el logo a dalt a l'esquerra */
-    top: 20px; /* Distància des de la part superior */
-    left: 20px; /* Distància des de l'esquerra */
-}
-
-/* Estil del logo */
-.logo {
-    width: 80px; /* Mida més petita (ajusta segons necessitis) */
-    height: auto; /* Manté la proporció de la imatge */
-}
-
-/* Estil del contenidor de tasques */
-.container {
-    background-color: var(--container-bg);
-    padding: 25px;
-    border-radius: 12px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-    width: 350px;
-    transition: background-color 0.3s ease;
-}
-
-/* Colors de prioritat */
-.prioritat-alta {
-    background-color: #e49292; /* Vermell clar */
-    border-left: 5px solid #ff0000; /* Vermell */
-}
-
-.prioritat-mitjana {
-    background-color: #e5ce82; /* Groc clar */
-    border-left: 5px solid #ffcc00; /* Groc */
-}
-
-.prioritat-baixa {
-    background-color: #acefac; /* Verd clar */
-    border-left: 5px solid #00cc00; /* Verd */
-}
-
-
-.priority-select {
-    width: 100%;
-    padding: 8px 10px;
-    margin-bottom: 15px;
-    border: 2px solid var(--border-color);
-    border-radius: 6px;
-    font-size: 14px;
-    height: 38px; 
+/* ==========================================================================
+   Variables & Reset
+   ========================================================================== */
+   :root {
+    /* Color Palette - Dark Mode Default */
+    --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+    --card-bg: rgba(30, 41, 59, 0.7);
+    --card-border: rgba(255, 255, 255, 0.1);
     
-    background-color: var(--container-bg);
-    color: var(--text-color);
-    transition: border-color 0.3s ease, background-color 0.3s ease, color 0.3s ease;
-    appearance: none; /* Elimina l'aparença per defecte del select */
-    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23333"><path d="M7 10l5 5 5-5z"/></svg>');
-    background-repeat: no-repeat;
-    background-position: right 10px center;
-    background-size: 12px;
+    --text-main: #f8fafc;
+    --text-muted: #94a3b8;
+    
+    --accent-primary: #3b82f6;
+    --accent-hover: #2563eb;
+    
+    /* Semantic Colors */
+    --success: #10b981;
+    --warning: #f59e0b;
+    --danger: #ef4444;
+    --info: #0ea5e9;
+    
+    /* Priority Colors */
+    --prio-high: rgba(239, 68, 68, 0.2);
+    --prio-high-border: #ef4444;
+    --prio-med: rgba(245, 158, 11, 0.2);
+    --prio-med-border: #f59e0b;
+    --prio-low: rgba(16, 185, 129, 0.2);
+    --prio-low-border: #10b981;
+    
+    /* Shadows & Effects */
+    --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+    --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.4);
+    --glass-blur: blur(12px);
+    
+    /* Metrics */
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 20px;
+    --radius-full: 9999px;
+    --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-[data-theme="dark"] .priority-select {
-    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23ffffff"><path d="M7 10l5 5 5-5z"/></svg>');
+[data-theme="light"] {
+    --bg-gradient: linear-gradient(135deg, #f0f9ff 0%, #e0e7ff 100%);
+    --card-bg: rgba(255, 255, 255, 0.85);
+    --card-border: rgba(0, 0, 0, 0.05);
+    
+    --text-main: #0f172a;
+    --text-muted: #64748b;
+    
+    --accent-primary: #4f46e5;
+    --accent-hover: #4338ca;
+    
+    /* Shadows & Effects */
+    --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+    --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.05);
 }
 
-[data-theme="dark"] .date-input::-webkit-calendar-picker-indicator {
-    filter: invert(1); /* Invierte el color a blanco */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
-[data-theme="white"] .date-input {
-    color-scheme: white; /* Fondo oscuro del calendario desplegable */
+body {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background: var(--bg-gradient);
+    color: var(--text-main);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    padding: 2rem 1rem;
+    overflow-x: hidden;
+    transition: background 0.5s ease;
 }
 
-.priority-select:focus {
-    border-color: var(--button-bg);
-    outline: none;
-}
-
-.priority-select option {
-    padding: 10px;
-    background-color: var(--container-bg);
-    color: var(--text-color);
-}
-
-.priority-select option[value="alta"] {
-    color: #ff0000; /* Vermell per a prioritat alta */
-}
-
-.priority-select option[value="mitjana"] {
-    color: #ffcc00; /* Groc per a prioritat mitjana */
-}
-
-.priority-select option[value="baixa"] {
-    color: #00cc00; /* Verd per a prioritat baixa */
-}
-
-.priority-select {
+/* ==========================================================================
+   Layout Structure
+   ========================================================================== */
+.app-wrapper {
     width: 100%;
-    padding: 12px;
-    margin-bottom: 15px;
-    border: 2px solid var(--border-color);
-    border-radius: 6px;
-    font-size: 16px;
-    background-color: var(--container-bg);
-    color: var(--text-color);
-    transition: border-color 0.3s ease, background-color 0.3s ease, color 0.3s ease;
-    appearance: none; /* Elimina l'aparença per defecte del select */
-    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23333"><path d="M7 10l5 5 5-5z"/></svg>');
-    background-repeat: no-repeat;
-    background-position: right 10px center;
-    background-size: 12px;
+    max-width: 800px;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    position: relative;
+    z-index: 1;
 }
 
-.priority-select:focus {
-    border-color: var(--button-bg);
-    outline: none;
+/* Glassmorphism utility */
+.glass-panel {
+    background: var(--card-bg);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
 }
 
-.priority-select option {
-    padding: 10px;
-    background-color: var(--container-bg);
-    color: var(--text-color);
+/* ==========================================================================
+   Header
+   ========================================================================== */
+.app-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    border-radius: var(--radius-lg);
+    background: var(--card-bg);
+    backdrop-filter: var(--glass-blur);
+    border: 1px solid var(--card-border);
+    box-shadow: var(--shadow-sm);
+    animation: slideDown 0.5s ease-out;
 }
 
-/* Estils per a les icones de prioritat */
-.priority-select option[value="alta"] {
-    color: #ff0000; /* Vermell per a prioritat alta */
+.header-brand {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
 }
 
-.priority-select option[value="mitjana"] {
-    color: #ffcc00; /* Groc per a prioritat mitjana */
+.brand-logo {
+    width: 48px;
+    height: 48px;
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+    transition: transform var(--transition);
 }
 
-.priority-select option[value="baixa"] {
-    color: #00cc00; /* Verd per a prioritat baixa */
+.brand-logo:hover {
+    transform: rotate(10deg) scale(1.05);
 }
 
-/* Afegir icones a les opcions */
-.priority-select option::before {
-    font-family: "Font Awesome 5 Free";
-    font-weight: 900;
-    margin-right: 10px;
+.brand-name {
+    font-size: 1.5rem;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    background: linear-gradient(to right, var(--accent-primary), #8b5cf6);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 
-.priority-select option[value="alta"]::before {
-    content: "\f06a"; /* Icona de Font Awesome per a prioritat alta */
+.brand-tagline {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    font-weight: 500;
 }
 
-.priority-select option[value="mitjana"]::before {
-    content: "\f071"; /* Icona de Font Awesome per a prioritat mitjana */
+.header-actions {
+    display: flex;
+    gap: 0.75rem;
 }
 
-.priority-select option[value="baixa"]::before {
-    content: "\f058"; /* Icona de Font Awesome per a prioritat baixa */
+.icon-btn {
+    width: 42px;
+    height: 42px;
+    border-radius: var(--radius-full);
+    border: 1px solid var(--card-border);
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-main);
+    font-size: 1.1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all var(--transition);
 }
 
-.priority-select option[value=""] {
-    color: #999; /* Color gris per a l'opció per defecte */
-    font-style: italic; /* Text en cursiva per a l'opció per defecte */
+[data-theme="light"] .icon-btn {
+    background: rgba(0, 0, 0, 0.03);
 }
 
-/* Estil per al selector de prioritat dins del formulari d'edició */
-.edit-input, .priority-select {
+.icon-btn:hover {
+    background: var(--accent-primary);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+/* ==========================================================================
+   Stats Bar
+   ========================================================================== */
+.stats-bar {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    animation: slideDown 0.6s ease-out;
+    position: relative;
+}
+
+.stat-card {
+    background: var(--card-bg);
+    backdrop-filter: var(--glass-blur);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-md);
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--shadow-sm);
+    transition: transform var(--transition);
+}
+
+.stat-card:hover {
+    transform: translateY(-3px);
+}
+
+.stat-number {
+    font-size: 2rem;
+    font-weight: 800;
+    line-height: 1;
+    margin-bottom: 0.25rem;
+}
+
+.stat-label {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 600;
+}
+
+.accent-pending .stat-number { color: var(--warning); }
+.accent-done .stat-number { color: var(--success); }
+
+.progress-section {
+    grid-column: 1 / -1;
+    background: var(--card-bg);
+    backdrop-filter: var(--glass-blur);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-md);
+    padding: 1rem 1.5rem;
+}
+
+.progress-label {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.75rem;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+}
+
+.progress-bar-track {
+    height: 8px;
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: var(--radius-full);
+    overflow: hidden;
+}
+
+[data-theme="light"] .progress-bar-track {
+    background: rgba(0, 0, 0, 0.05);
+}
+
+.progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent-primary), var(--success));
+    width: 0%;
+    border-radius: var(--radius-full);
+    transition: width 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* ==========================================================================
+   Main Card & Inputs
+   ========================================================================== */
+.main-card {
+    background: var(--card-bg);
+    backdrop-filter: var(--glass-blur);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;
+    animation: fadeIn 0.8s ease-out;
+}
+
+.add-task-section {
+    padding: 1.5rem 2rem;
+    border-bottom: 1px solid var(--card-border);
+}
+
+.section-title {
+    font-size: 1.25rem;
+    margin-bottom: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--text-main);
+}
+
+.input-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.input-field-wrapper {
+    position: relative;
+    flex: 1;
+    min-width: 140px;
+}
+
+.flex-grow {
+    flex: 1 1 100%;
+}
+
+.input-icon {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    pointer-events: none;
+    transition: color var(--transition);
+}
+
+.task-input, .styled-select, .styled-input {
     width: 100%;
-    padding: 8px;
-    margin-bottom: 10px;
-    flex-basis: 100%; 
-    border: 2px solid var(--border-color);
-    border-radius: 6px;
-    font-size: 14px;
-    background-color: var(--container-bg);
-    color: var(--text-color);
-    transition: border-color 0.3s ease, background-color 0.3s ease, color 0.3s ease;
+    background: rgba(0, 0, 0, 0.1);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-md);
+    color: var(--text-main);
+    font-family: inherit;
+    font-size: 1rem;
+    padding: 0.875rem 1rem 0.875rem 2.5rem;
+    transition: all var(--transition);
 }
 
-.priority-select {
+[data-theme="light"] .task-input, 
+[data-theme="light"] .styled-select, 
+[data-theme="light"] .styled-input {
+    background: rgba(255, 255, 255, 0.5);
+    border-color: rgba(0,0,0,0.1);
+}
+
+.styled-select {
     appearance: none;
-    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23333"><path d="M7 10l5 5 5-5z"/></svg>');
-    background-repeat: no-repeat;
-    background-position: right 10px center;
-    background-size: 12px;
+    cursor: pointer;
 }
 
-.priority-select:focus {
-    border-color: var(--button-bg);
+.task-input:focus, .styled-select:focus, .styled-input:focus {
     outline: none;
+    border-color: var(--accent-primary);
+    background: rgba(0, 0, 0, 0.2);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+}
+
+[data-theme="light"] .task-input:focus, 
+[data-theme="light"] .styled-select:focus, 
+[data-theme="light"] .styled-input:focus {
+    background: white;
+}
+
+.input-field-wrapper:focus-within .input-icon {
+    color: var(--accent-primary);
 }
 
 .char-counter {
-    text-align: right; /* Alinea el text a la dreta */
-    font-size: 14px; /* Mida de la font */
-    color: #666; /* Color del text */
-    margin-top: 5px; /* Espai superior */
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    font-weight: 500;
 }
 
-/* Ajusta el contenedor de botones */
-.button-container {
-    display: flex;
-    gap: 5px; /* Espacio entre botones */
-    flex-shrink: 0; /* Evita que los botones se compriman */
-    min-width: 150px; /* Espacio mínimo para los botones */
-    margin-left: auto;
-    justify-content: flex-end; /* Alinea a la derecha */
-    align-items: center; /* Alineación vertical con otros elementos */
-    height: 38px; /* Misma altura que los inputs */
-
-
-}
-
-/* Asegurarse de que los iconos de prioridad también se alineen */
-li > i.fas {
-    margin-right: 10px;
-    flex-shrink: 0; /* Evita que el icono se encoja */
-}
-
-/* Ajusta el estilo del texto de la tarea */
-li span {
-    flex-grow: 1; /* Permite que el texto ocupe el espacio disponible */
-    margin: 0 10px; /* Añade margen a los lados */
-    text-align: left; /* Alinea el texto a la izquierda */
-    max-width: calc(100% - 120px); /* Limita el ancho para dejar espacio a los botones */
-    margin-right: 10px;
-    word-break: break-word; /* Para que el texto largo se rompa y no desborde */
-}
-
-/* Responsividad para la edición en pantallas pequeñas */
-@media (max-width: 600px) {
-    li {
-        flex-direction: column; /* Apilar elementos verticalmente en pantallas pequeñas */
-        align-items: flex-start; /* Alinear a la izquierda cuando están apilados */
-    }
-
-    li .edit-input,
-    li .priority-select,
-    li .date-input,
-    li .save-btn {
-        width: 100%; /* Ocupar todo el ancho disponible */
-        margin-right: 0; /* Eliminar margen derecho */
-        margin-bottom: 10px; /* Más espacio entre elementos apilados */
-    }
-
-    li .save-btn {
-        margin-left: 0; /* Eliminar margen izquierdo */
-    }
-
-    li .button-container {
-        width: 100%;
-        justify-content: flex-start; /* Alinear los botones a la izquierda */
-        margin-top: 10px; /* Espacio encima del contenedor de botones */
-    }
-}
-
-
-/* Estilo para el contenedor de inputs */
-.input-group {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    margin-bottom: 15px;
-}
-
-/* Estilo para el input de fecha (similar al de prioridad) */
-.date-input {
-    width: 100%;
-    padding: 8px 10px; /* Reducido de 12px */
-    border: 2px solid var(--border-color);
-    border-radius: 6px;
-    font-size: 14px; /* Tamaño de fuente más pequeño */
-    height: 38px; /* Altura fija */
-    background-color: var(--container-bg);
-    color: var(--text-color);
-    box-sizing: border-box; /* Para que el padding no afecte el ancho */
-    margin-bottom: 8px; /* Igual que otros elementos */
-}
-
-.date-input:focus {
-    border-color: var(--button-bg);
-    outline: none;
-}
-
-/* Estilo para el placeholder del date input */
-.date-input::placeholder {
-    color: #999;
-    font-style: italic;
-}
-
-button.edit-btn, button.delete-btn {
-    padding: 4px 8px; /* Ajuste de padding */
-    font-size: 1.1em; /* Tamaño de fuente igualado */
-}
-
-.edit-mode .save-btn {
-    padding: 8px 15px; /* Más grande durante la edición */
-    font-size: 14px; /* Tamaño de fuente adecuado */
-    height: 38px;
-
-}
-
-.save-btn {
-    position: relative;
-    top: -5px; /* Lo sube ligeramente */
-    margin-bottom: -2px; /* Compensa el desplazamiento */
-}
-
-/* --- Estilos para el botón de ajustes y el menú --- */
-
-.settings-container {
-    position: fixed; /* Fija el contenedor en la pantalla */
-    bottom: 70px; /* Distancia desde la parte inferior */
-    right: 40px; /* Distancia desde la parte derecha */
-    z-index: 1000; /* Asegura que esté por encima de otros elementos */
-}
-
-.settings-button {
-    background-color: #cb11c2; /* Color de fondo del botón */
-    color: white; /* Color del icono */
-    border: none; /* Sin borde */
-    border-radius: 50%; /* Lo hace redondo */
-    width: 50px; /* Ancho del botón */
-    height: 50px; /* Alto del botón */
-    font-size: 24px; /* Tamaño del icono */
-    display: flex; /* Para centrar el icono */
-    justify-content: center; /* Centra horizontalmente */
-    align-items: center; /* Centra verticalmente */
-    cursor: pointer; /* Cambia el cursor a una mano al pasar por encima */
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2); /* Sombra para un efecto 3D */
-    transition: background-color 0.3s ease, transform 0.3s ease; /* Transición suave */
-    outline: none; /* ¡Esta es la línea clave para eliminar el contorno! */
-}
-
-
-.settings-button:hover {
-    background-color: #0056b3; /* Color de fondo al pasar el ratón */
-    transform: rotate(45deg); /* Gira el icono al pasar el ratón */
-}
-
-.settings-menu {
-    display: none; /* Oculto por defecto */
-    position: absolute; /* Posicionamiento absoluto respecto al contenedor */
-    bottom: 60px; /* Un poco por encima del botón */
-    right: 0; /* Alineado a la derecha del botón */
-    background-color: white; /* Fondo del menú */
-    border-radius: 8px; /* Bordes redondeados */
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* Sombra más pronunciada */
-    padding: 10px; /* Espaciado interno */
-    min-width: 200px; /* Ancho mínimo del menú */
-    transform-origin: bottom right; /* Punto de origen para la transformación */
-    animation: fadeInScale 0.3s ease-out forwards; /* Animación de aparición */
-}
-
-/* Animación para que el menú aparezca */
-@keyframes fadeInScale {
-    from {
-        opacity: 0;
-        transform: scale(0.8);
-    }
-    to {
-        opacity: 1;
-        transform: scale(1);
-    }
-}
-
-
-.settings-menu.active {
-    display: block; /* Muestra el menú cuando tiene la clase 'active' */
-}
-
-.clear-all-button {
-    background-color: #dc3545; /* Color rojo para indicar peligro */
-    color: white;
-    border: none;
-    border-radius: 5px;
-    padding: 10px 15px;
-    width: 100%; /* Ocupa todo el ancho del menú */
-    text-align: left; /* Alinea el texto a la izquierda */
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    font-size: 16px;
-}
-
-.clear-all-button:hover {
-    background-color: #c82333; /* Color más oscuro al pasar el ratón */
-}
-
-/* --- Adaptaciones para el tema oscuro (si lo tienes implementado) --- */
-body.dark-mode .settings-button {
-    background-color: #555; /* Color del botón en modo oscuro */
-    color: #eee;
-}
-
-body.dark-mode .settings-button:hover {
-    background-color: #777;
-}
-
-body.dark-mode .settings-menu {
-    background-color: #333; /* Color del menú en modo oscuro */
-    color: #eee;
-}
-
-body.dark-mode .clear-all-button {
-    background-color: #a02c3c; /* Color del botón de limpiar en modo oscuro */
-}
-
-body.dark-mode .clear-all-button:hover {
-    background-color: #8a2533;
-}
-
-/* --- Adaptaciones para el tema oscuro del botón de ajustes y menú --- */
-[data-theme="dark"] .settings-button {
-    background-color: var(--button-bg); /* Usa la variable de botón para el modo oscuro */
-    color: var(--text-color); /* Usa la variable de texto para el modo oscuro */
-}
-
-[data-theme="dark"] .settings-button:hover {
-    background-color: var(--button-hover-bg); /* Usa la variable de hover para el modo oscuro */
-}
-
-[data-theme="dark"] .settings-menu {
-    background-color: var(--container-bg); /* Usa la variable de fondo del contenedor */
-    color: var(--text-color); /* Usa la variable de texto */
-    box-shadow: 0 4px 15px rgba(255, 255, 255, 0.1); /* Ajusta la sombra para el modo oscuro */
-}
-
-[data-theme="dark"] .clear-all-button {
-    background-color: #a02c3c; /* Un rojo oscuro para el botón de borrar */
-    color: #eee; /* Texto más claro */
-}
-
-[data-theme="dark"] .clear-all-button:hover {
-    background-color: #8a2533; /* Un rojo aún más oscuro al pasar el ratón */
-}
-
-/* Estilos para las opciones dentro del menú de ajustes (e.g., Notificaciones) */
-.settings-option-button {
-    background-color: #6c757d; /* Un color neutro como el gris */
-    color: white;
-    border: none;
-    border-radius: 5px;
-    padding: 10px 15px;
-    width: 100%;
-    text-align: left;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    font-size: 16px;
-    margin-bottom: 8px; /* Espacio debajo de este botón */
-    display: flex; /* Para alinear el icono y el texto */
-    align-items: center;
-    justify-content: space-between; /* Para empujar el status a la derecha */
-}
-
-.settings-option-button i {
-    margin-right: 10px; /* Espacio entre el icono y el texto */
-}
-
-.settings-option-button:hover {
-    background-color: #5a6268; /* Gris más oscuro al pasar el ratón */
-}
-
-/* Indicador de estado ON/OFF */
-.status-indicator {
-    background-color: #dc3545; /* Rojo para OFF */
-    color: white;
-    padding: 2px 8px;
-    border-radius: 4px;
-    font-size: 12px;
+.char-counter.limit {
+    color: var(--danger);
     font-weight: bold;
 }
 
-.status-indicator.active {
-    background-color: #28a745; /* Verde para ON */
-}
+/* Priority select colors */
+#prioritySelect option { background: var(--card-bg); color: var(--text-main); }
+[data-theme="light"] #prioritySelect option { background: white; color: black; }
 
-/* --- Adaptaciones para el tema oscuro (para el nuevo botón) --- */
-[data-theme="dark"] .settings-option-button {
-    background-color: #555;
-    color: #eee;
-}
-
-[data-theme="dark"] .settings-option-button:hover {
-    background-color: #777;
-}
-
-[data-theme="dark"] .status-indicator {
-    background-color: #a02c3c; /* Rojo oscuro para OFF en dark mode */
-}
-
-[data-theme="dark"] .status-indicator.active {
-    background-color: #1e7e34; /* Verde oscuro para ON en dark mode */
-}
-
-/* --- Nuevos estilos para el desplegable de ordenación --- */
-.dropdown-sort {
-    position: relative; /* Contenedor para el menú desplegable */
-    margin-bottom: 8px; /* Espacio debajo del botón principal de ordenación */
-}
-
-.dropdown-sort .dropdown-toggle {
-    /* Hereda estilos de .settings-option-button, pero añade un caret */
-    display: flex;
-    justify-content: space-between; /* Espacia el texto y el icono de la flecha */
-    align-items: center;
-    background-color: #6c757d; /* Color neutro */
+.add-btn {
+    width: 100%;
+    background: var(--accent-primary);
     color: white;
     border: none;
-    border-radius: 5px;
-    padding: 10px 15px;
-    width: 100%;
-    text-align: left;
+    border-radius: var(--radius-md);
+    padding: 1rem;
+    font-size: 1.1rem;
+    font-weight: 600;
     cursor: pointer;
-    transition: background-color 0.3s ease;
-    font-size: 16px;
-}
-
-.dropdown-sort .dropdown-toggle:hover {
-    background-color: #5a6268; /* Gris más oscuro al pasar el ratón */
-}
-
-.dropdown-sort .dropdown-toggle i:first-child { /* Icono de ordenación */
-    margin-right: 10px;
-}
-
-.dropdown-sort .dropdown-toggle .fa-caret-down { /* Icono de flecha hacia abajo */
-    margin-left: auto; /* Empuja la flecha a la derecha */
-}
-
-.dropdown-content {
-    display: none; /* Oculto por defecto */
-    position: absolute; /* Posicionado absolutamente dentro de .dropdown-sort */
-    background-color: white; /* Fondo del desplegable */
-    min-width: 100%; /* Ocupa el ancho del botón padre */
-    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-    z-index: 1; /* Asegura que esté por encima de otros elementos */
-    border-radius: 5px;
-    padding: 5px 0; /* Pequeño padding vertical */
-    top: 100%; /* Se posiciona justo debajo del botón principal */
-    left: 0;
-    margin-top: 5px; /* Pequeño espacio entre el botón y el desplegable */
-    animation: fadeInScale 0.2s ease-out forwards; /* Animación más rápida */
-}
-
-.dropdown-content.active {
-    display: block; /* Muestra el contenido cuando tiene la clase 'active' */
-}
-
-.dropdown-content .settings-option-button {
-    background-color: transparent; /* Sin fondo para las opciones del desplegable */
-    color: #333; /* Texto oscuro por defecto */
-    padding: 10px 15px;
-    text-decoration: none;
-    display: block;
-    border-radius: 0; /* Sin bordes redondeados en las esquinas interiores */
-    justify-content: flex-start; /* Alinea el texto a la izquierda */
-    margin-bottom: 0; /* Elimina el margen inferior entre las opciones */
-}
-
-.dropdown-content .settings-option-button:hover {
-    background-color: #f1f1f1; /* Fondo gris claro al pasar el ratón */
-}
-
-/* --- Adaptaciones para el tema oscuro del desplegable de ordenación --- */
-[data-theme="dark"] .dropdown-sort .dropdown-toggle {
-    background-color: #555; /* Color del botón en modo oscuro */
-    color: #eee;
-}
-
-[data-theme="dark"] .dropdown-sort .dropdown-toggle:hover {
-    background-color: #777;
-}
-
-[data-theme="dark"] .dropdown-content {
-    background-color: #444; /* Fondo del desplegable en modo oscuro */
-    box-shadow: 0px 8px 16px 0px rgba(255,255,255,0.1);
-}
-
-[data-theme="dark"] .dropdown-content .settings-option-button {
-    color: #eee; /* Texto claro en modo oscuro */
-}
-
-[data-theme="dark"] .dropdown-content .settings-option-button:hover {
-    background-color: #666; /* Fondo gris oscuro al pasar el ratón */
-}
-
-/* --- Estilos para los nuevos modales de alerta y confirmación --- */
-.custom-modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5); /* Fondo semitransparente oscuro */
     display: flex;
-    justify-content: center;
     align-items: center;
-    z-index: 2000; /* Asegura que esté por encima de todo */
-}
-
-.custom-modal-content {
-    background-color: white;
-    padding: 30px;
-    border-radius: 10px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-    text-align: center;
-    max-width: 400px;
-    width: 90%;
-    animation: fadeInModal 0.3s ease-out; /* Animación de aparición del modal */
-}
-
-.custom-modal-content p {
-    margin-bottom: 20px;
-    font-size: 1.1em;
-    color: #333;
-}
-
-.custom-modal-ok-btn,
-.custom-modal-confirm-btn,
-.custom-modal-cancel-btn {
-    background-color: #007bff; /* Azul para OK/Confirmar */
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 1em;
-    margin: 5px;
-    transition: background-color 0.3s ease;
-}
-
-.custom-modal-ok-btn:hover,
-.custom-modal-confirm-btn:hover {
-    background-color: #0056b3;
-}
-
-.custom-modal-cancel-btn {
-    background-color: #6c757d; /* Gris para Cancelar */
-}
-
-.custom-modal-cancel-btn:hover {
-    background-color: #5a6268;
-}
-
-.modal-buttons {
-    display: flex;
     justify-content: center;
-    gap: 10px; /* Espacio entre los botones */
+    gap: 0.5rem;
+    transition: all var(--transition);
+    box-shadow: var(--shadow-md);
 }
 
-/* Animación para la aparición del modal */
-@keyframes fadeInModal {
-    from {
-        opacity: 0;
-        transform: translateY(-20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+.add-btn:hover {
+    background: var(--accent-hover);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
 }
 
-/* --- Adaptaciones para el tema oscuro de los modales --- */
-[data-theme="dark"] .custom-modal-content {
-    background-color: #333;
-    color: #eee;
-    box-shadow: 0 5px 15px rgba(255, 255, 255, 0.1);
+.add-btn:active {
+    transform: translateY(0);
 }
 
-[data-theme="dark"] .custom-modal-content p {
-    color: #eee;
+/* ==========================================================================
+   Filters & Search
+   ========================================================================== */
+.filter-section {
+    padding: 1.5rem 2rem;
+    background: rgba(0, 0, 0, 0.05);
+    border-bottom: 1px solid var(--card-border);
 }
 
-[data-theme="dark"] .custom-modal-ok-btn,
-[data-theme="dark"] .custom-modal-confirm-btn {
-    background-color: #6a11cb; /* Tu color principal en modo oscuro */
+[data-theme="light"] .filter-section {
+    background: rgba(0, 0, 0, 0.02);
 }
 
-[data-theme="dark"] .custom-modal-ok-btn:hover,
-[data-theme="dark"] .custom-modal-confirm-btn:hover {
-    background-color: #7a22dc;
+.search-wrapper {
+    position: relative;
+    margin-bottom: 1rem;
 }
 
-[data-theme="dark"] .custom-modal-cancel-btn {
-    background-color: #555;
+.search-input {
+    width: 100%;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-full);
+    padding: 0.75rem 2.5rem;
+    color: var(--text-main);
+    font-family: inherit;
+    transition: all var(--transition);
 }
 
-[data-theme="dark"] .custom-modal-cancel-btn:hover {
-    background-color: #777;
+.search-input:focus {
+    outline: none;
+    border-color: var(--accent-primary);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
 }
 
-/* --- Estilos para los iconos en los botones de tarea (Completar, Editar, Eliminar) --- */
-.complete-btn, .edit-btn, .delete-btn {
+.search-icon {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-muted);
+}
+
+.clear-search-btn {
+    position: absolute;
+    right: 0.5rem;
+    top: 50%;
+    transform: translateY(-50%);
     background: none;
     border: none;
-    font-size: 1.1em; /* Ajusta el tamaño de los iconos */
+    color: var(--text-muted);
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
     cursor: pointer;
-    margin-left: 5px; /* Espacio entre botones */
-    transition: color 0.2s ease;
-    padding: 5px; /* Añade un poco de padding para facilitar el clic */
-    border-radius: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
 }
 
-.complete-btn {
-    color: #28a745; /* Verde para completar */
+.clear-search-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text-main);
 }
 
-.complete-btn:hover {
-    color: #218838;
-    background-color: rgba(40, 167, 69, 0.1); /* Fondo suave al pasar el ratón */
+.filter-tabs {
+    display: flex;
+    gap: 0.5rem;
+    overflow-x: auto;
+    padding-bottom: 0.5rem;
+    /* Hide scrollbar */
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+.filter-tabs::-webkit-scrollbar { display: none; }
+
+.filter-tab {
+    background: transparent;
+    border: 1px solid var(--card-border);
+    color: var(--text-muted);
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius-full);
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all var(--transition);
 }
 
-.edit-btn {
-    color: #f5eeee; /* Azul para editar */
+.filter-tab:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-main);
 }
 
-.edit-btn:hover {
-    color: #f5eeee;
-    background-color: rgba(0, 123, 255, 0.1);
+.filter-tab.active {
+    background: var(--accent-primary);
+    color: white;
+    border-color: var(--accent-primary);
+    box-shadow: var(--shadow-sm);
 }
 
-.delete-btn {
-    color: #dc3545; /* Rojo para eliminar */
+/* ==========================================================================
+   Task List
+   ========================================================================== */
+.task-list-section {
+    padding: 1.5rem 2rem;
+    min-height: 200px;
 }
 
-.delete-btn:hover {
-    color: #c82333;
-    background-color: rgba(220, 53, 69, 0.1);
+.task-list-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
 }
 
-/* --- Adaptaciones para el tema oscuro de los botones de tarea --- */
-[data-theme="dark"] .complete-btn {
-    color: #2bd754; /* Verde más brillante en dark mode */
-}
-[data-theme="dark"] .complete-btn:hover {
-    color: #1ea03a;
-    background-color: rgba(43, 215, 84, 0.1);
+.task-list-count {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    font-weight: 500;
 }
 
-[data-theme="dark"] .edit-btn {
-    color: #443c3c; /* Azul más brillante en dark mode */
-}
-[data-theme="dark"] .edit-btn:hover {
-    color: #443c3c;
-    background-color: rgba(109, 175, 251, 0.1);
+.sort-quick {
+    display: flex;
+    gap: 0.5rem;
 }
 
-[data-theme="dark"] .delete-btn {
-    color: #e06c75; /* Rojo más suave en dark mode */
-}
-[data-theme="dark"] .delete-btn:hover {
-    color: #c84c55;
-    background-color: rgba(224, 108, 117, 0.1);
-}
-
-/* Estilo para el contador de caracteres al editar */
-.edit-char-counter {
-    font-size: 0.8em;
-    color: #666;
-    margin-top: -5px; /* Ajusta la posición */
-    margin-bottom: 5px;
-    text-align: right;
+.sort-chip {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    transition: color 0.2s;
 }
 
-[data-theme="dark"] .edit-char-counter {
-    color: #bbb;
+.sort-chip:hover, .sort-chip.active {
+    color: var(--accent-primary);
+}
+
+.task-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.task-item {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-md);
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    animation: slideInRight 0.3s ease-out;
+    position: relative;
+    overflow: hidden;
+}
+
+.task-item:hover {
+    transform: translateX(4px);
+    box-shadow: var(--shadow-md);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+[data-theme="light"] .task-item:hover {
+    border-color: rgba(0, 0, 0, 0.15);
+}
+
+/* Priority Borders */
+.task-item.prio-alta { border-left: 4px solid var(--prio-high-border); }
+.task-item.prio-mitjana { border-left: 4px solid var(--prio-med-border); }
+.task-item.prio-baixa { border-left: 4px solid var(--prio-low-border); }
+
+/* Drag Handle */
+.drag-handle {
+    cursor: grab;
+    color: var(--text-muted);
+    padding: 0.5rem;
+    margin-left: -0.5rem;
+    opacity: 0.5;
+    transition: opacity 0.2s;
+}
+
+.task-item:hover .drag-handle { opacity: 1; }
+.drag-handle:active { cursor: grabbing; }
+.sortable-ghost { opacity: 0.4; }
+
+/* Checkbox */
+.task-checkbox-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.custom-checkbox {
+    appearance: none;
+    width: 24px;
+    height: 24px;
+    border: 2px solid var(--text-muted);
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.2s;
+    background: transparent;
+}
+
+.custom-checkbox:checked {
+    background: var(--success);
+    border-color: var(--success);
+}
+
+.custom-checkbox:checked::after {
+    content: '\f00c';
+    font-family: 'Font Awesome 6 Free';
+    font-weight: 900;
+    color: white;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 12px;
+}
+
+/* Task Content */
+.task-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0; /* for text truncation */
+}
+
+.task-text {
+    font-size: 1.05rem;
+    font-weight: 500;
+    color: var(--text-main);
+    word-break: break-word;
+    transition: color 0.3s, text-decoration 0.3s;
+}
+
+.task-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 0.4rem;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+.meta-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    background: rgba(0, 0, 0, 0.2);
+    padding: 0.2rem 0.5rem;
+    border-radius: var(--radius-sm);
+}
+
+[data-theme="light"] .meta-badge {
+    background: rgba(0, 0, 0, 0.05);
+}
+
+.meta-date.due-soon { color: var(--warning); font-weight: 600; }
+.meta-date.overdue { color: var(--danger); font-weight: 600; }
+
+/* Completed State */
+.task-item.completed {
+    background: rgba(0, 0, 0, 0.1);
+    opacity: 0.7;
+}
+
+[data-theme="light"] .task-item.completed {
+    background: rgba(0, 0, 0, 0.02);
+}
+
+.task-item.completed .task-text {
+    text-decoration: line-through;
+    color: var(--text-muted);
+}
+
+.task-item.completed.prio-alta,
+.task-item.completed.prio-mitjana,
+.task-item.completed.prio-baixa {
+    border-left-color: var(--text-muted);
+}
+
+/* Task Actions */
+.task-actions {
+    display: flex;
+    gap: 0.5rem;
+    opacity: 0;
+    transform: translateX(10px);
+    transition: all 0.3s;
+}
+
+.task-item:hover .task-actions {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+/* Mobile: always show actions */
+@media (max-width: 768px) {
+    .task-actions {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.action-btn {
+    width: 32px;
+    height: 32px;
+    border: none;
+    border-radius: var(--radius-sm);
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-muted);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+[data-theme="light"] .action-btn { background: rgba(0, 0, 0, 0.05); }
+
+.btn-edit:hover { background: var(--info); color: white; }
+.btn-delete:hover { background: var(--danger); color: white; }
+
+/* Empty State */
+.empty-state {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: var(--text-muted);
+    animation: fadeIn 0.5s ease-out;
+}
+
+.empty-icon {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+    opacity: 0.5;
+    background: linear-gradient(135deg, var(--text-muted), transparent);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.empty-state h3 {
+    font-size: 1.2rem;
+    color: var(--text-main);
+    margin-bottom: 0.5rem;
+}
+
+/* ==========================================================================
+   Edit Mode inside Task Item
+   ========================================================================== */
+.edit-form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    width: 100%;
+    flex: 1;
+}
+
+.edit-input {
+    width: 100%;
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--accent-primary);
+    border-radius: var(--radius-sm);
+    color: var(--text-main);
+    padding: 0.5rem;
+    font-family: inherit;
+    font-size: 1rem;
+}
+
+[data-theme="light"] .edit-input { background: white; }
+.edit-input:focus { outline: none; box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2); }
+
+.edit-controls {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.edit-select, .edit-date {
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--card-border);
+    color: var(--text-main);
+    border-radius: var(--radius-sm);
+    padding: 0.4rem;
+    font-size: 0.85rem;
+}
+
+[data-theme="light"] .edit-select, [data-theme="light"] .edit-date { background: white; }
+
+.edit-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-left: auto;
+}
+
+.btn-save {
+    background: var(--success);
+    color: white;
+    border: none;
+    border-radius: var(--radius-sm);
+    padding: 0.4rem 0.8rem;
+    font-size: 0.85rem;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.btn-cancel {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text-main);
+    border: none;
+    border-radius: var(--radius-sm);
+    padding: 0.4rem 0.8rem;
+    font-size: 0.85rem;
+    cursor: pointer;
+}
+
+[data-theme="light"] .btn-cancel { background: rgba(0, 0, 0, 0.1); }
+
+/* ==========================================================================
+   Settings Panel (Slide-in)
+   ========================================================================== */
+.settings-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+    z-index: 100;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s;
+}
+
+.settings-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.settings-panel {
+    position: fixed;
+    top: 0; right: -350px; bottom: 0;
+    width: 320px;
+    background: var(--card-bg);
+    backdrop-filter: var(--glass-blur);
+    border-left: 1px solid var(--card-border);
+    z-index: 101;
+    box-shadow: -10px 0 25px rgba(0,0,0,0.5);
+    transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    flex-direction: column;
+}
+
+[data-theme="light"] .settings-panel {
+    background: white;
+}
+
+.settings-panel.active { right: 0; }
+
+.settings-panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem;
+    border-bottom: 1px solid var(--card-border);
+}
+
+.settings-panel-header h2 {
+    font-size: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.settings-panel-body {
+    padding: 1.5rem;
+    overflow-y: auto;
+    flex: 1;
+}
+
+.settings-group { margin-bottom: 2rem; }
+
+.settings-group-title {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 1rem;
+}
+
+.settings-action-btn {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-md);
+    padding: 1rem;
+    color: var(--text-main);
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-bottom: 0.5rem;
+    text-align: left;
+}
+
+[data-theme="light"] .settings-action-btn { background: rgba(0, 0, 0, 0.03); }
+.settings-action-btn:hover { background: rgba(255, 255, 255, 0.1); transform: translateY(-2px); }
+[data-theme="light"] .settings-action-btn:hover { background: rgba(0, 0, 0, 0.08); }
+
+.settings-action-btn.warning { color: var(--warning); border-color: rgba(245, 158, 11, 0.3); }
+.settings-action-btn.warning:hover { background: var(--warning); color: white; }
+.settings-action-btn.danger { color: var(--danger); border-color: rgba(239, 68, 68, 0.3); }
+.settings-action-btn.danger:hover { background: var(--danger); color: white; }
+
+.status-badge {
+    margin-left: auto;
+    padding: 0.2rem 0.6rem;
+    border-radius: var(--radius-full);
+    font-size: 0.75rem;
+    font-weight: bold;
+}
+
+.status-badge.off { background: rgba(239, 68, 68, 0.2); color: var(--danger); }
+.status-badge.on { background: rgba(16, 185, 129, 0.2); color: var(--success); }
+
+.settings-info {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+}
+.settings-info p { margin-bottom: 0.5rem; display: flex; align-items: flex-start; gap: 0.5rem; }
+
+/* ==========================================================================
+   Modals & Toasts
+   ========================================================================== */
+.modal-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(5px);
+    z-index: 200;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    animation: fadeIn 0.3s;
+}
+
+.modal-box {
+    background: var(--card-bg);
+    backdrop-filter: var(--glass-blur);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-lg);
+    padding: 2rem;
+    max-width: 400px;
+    width: 100%;
+    text-align: center;
+    box-shadow: var(--shadow-lg);
+    animation: scaleUp 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+[data-theme="light"] .modal-box { background: white; }
+
+.modal-icon {
+    font-size: 3rem;
+    color: var(--danger);
+    margin-bottom: 1rem;
+}
+.modal-icon.info { color: var(--info); }
+
+.modal-message {
+    font-size: 1.1rem;
+    margin-bottom: 1.5rem;
+    color: var(--text-main);
+    line-height: 1.5;
+}
+
+.modal-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+}
+
+.modal-btn {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: var(--radius-md);
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    flex: 1;
+}
+
+.modal-btn-danger { background: var(--danger); color: white; }
+.modal-btn-danger:hover { background: #dc2626; transform: translateY(-2px); }
+.modal-btn-primary { background: var(--accent-primary); color: white; }
+.modal-btn-primary:hover { background: var(--accent-hover); transform: translateY(-2px); }
+.modal-btn-secondary { background: rgba(255, 255, 255, 0.1); color: var(--text-main); }
+[data-theme="light"] .modal-btn-secondary { background: rgba(0, 0, 0, 0.1); }
+.modal-btn-secondary:hover { background: rgba(255, 255, 255, 0.2); }
+
+/* Toasts */
+.toast-container {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    z-index: 300;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    pointer-events: none;
+}
+
+.toast {
+    background: var(--card-bg);
+    backdrop-filter: var(--glass-blur);
+    border: 1px solid var(--card-border);
+    color: var(--text-main);
+    padding: 1rem 1.5rem;
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-lg);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    animation: slideInRight 0.3s forwards, fadeOut 0.3s forwards 2.7s;
+    pointer-events: auto;
+}
+
+[data-theme="light"] .toast { background: white; border-color: rgba(0,0,0,0.1); }
+.toast i { font-size: 1.25rem; }
+.toast.success i { color: var(--success); }
+.toast.error i { color: var(--danger); }
+.toast.info i { color: var(--info); }
+
+/* Footer */
+.app-footer {
+    text-align: center;
+    padding: 1rem;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    margin-top: auto;
+}
+
+.app-footer a {
+    color: var(--accent-primary);
+    text-decoration: none;
+    font-weight: 600;
+}
+.app-footer a:hover { text-decoration: underline; }
+.fa-heart { color: var(--danger); }
+
+/* ==========================================================================
+   Animations
+   ========================================================================== */
+@keyframes slideDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes slideInRight { from { opacity: 0; transform: translateX(30px); } to { opacity: 1; transform: translateX(0); } }
+@keyframes scaleUp { from { opacity: 0; transform: scale(0.8); } to { opacity: 1; transform: scale(1); } }
+@keyframes fadeOut { to { opacity: 0; visibility: hidden; } }
+
+/* Celebration animation for completion */
+@keyframes celebrate {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+.celebrate-effect { animation: celebrate 0.5s ease; }
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+    .stats-bar { grid-template-columns: 1fr; }
+    .input-row { flex-direction: column; }
+    .filter-section, .add-task-section, .task-list-section { padding: 1.25rem 1rem; }
+    .toast-container { bottom: 1rem; right: 1rem; left: 1rem; align-items: center; }
+    .settings-panel { width: 100%; right: -100%; }
 }

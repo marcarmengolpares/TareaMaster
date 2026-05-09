@@ -1,658 +1,611 @@
-document.addEventListener('DOMContentLoaded', function () {
-    // --- Selectores de Elementos del DOM ---
+document.addEventListener('DOMContentLoaded', () => {
+    // DOM Elements
+    const html = document.documentElement;
     const taskInput = document.getElementById('taskInput');
+    const charCounter = document.getElementById('charCounter');
+    const prioritySelect = document.getElementById('prioritySelect');
+    const taskDate = document.getElementById('taskDate');
+    const categorySelect = document.getElementById('categorySelect');
     const addTaskBtn = document.getElementById('addTaskBtn');
     const taskList = document.getElementById('taskList');
+    const emptyState = document.getElementById('emptyState');
     const themeToggle = document.getElementById('themeToggle');
-    const body = document.body;
-    const prioritySelect = document.getElementById('prioritySelect');
+    const searchInput = document.getElementById('searchInput');
+    const clearSearchBtn = document.getElementById('clearSearch');
+    const filterTabs = document.querySelectorAll('.filter-tab');
+    
+    // Stats Elements
+    const totalCount = document.getElementById('totalCount');
+    const pendingCount = document.getElementById('pendingCount');
+    const doneCount = document.getElementById('doneCount');
+    const progressPercent = document.getElementById('progressPercent');
+    const progressBar = document.getElementById('progressBar');
+    const taskListCount = document.getElementById('taskListCount');
+
+    // Settings & Modals
     const settingsBtn = document.getElementById('settingsBtn');
-    const settingsMenu = document.getElementById('settingsMenu');
-    const clearAllTasksBtn = document.getElementById('clearAllTasksBtn');
+    const settingsPanel = document.getElementById('settingsPanel');
+    const closeSettingsBtn = document.getElementById('closeSettingsBtn');
+    const settingsOverlay = document.getElementById('settingsOverlay');
     const toggleNotificationsBtn = document.getElementById('toggleNotificationsBtn');
-    const notificationStatusSpan = document.getElementById('notificationStatus');
-    const charCounter = document.getElementById('charCounter');
-    const taskDateInput = document.getElementById('taskDate');
+    const notificationStatus = document.getElementById('notificationStatus');
+    const clearCompletedBtn = document.getElementById('clearCompletedBtn');
+    const clearAllTasksBtn = document.getElementById('clearAllTasksBtn');
+    const toastContainer = document.getElementById('toastContainer');
 
-    // Nuevos selectores para la funcionalidad de ordenación
-    const dropdownSortToggle = document.querySelector('.dropdown-sort .dropdown-toggle');
-    const dropdownSortContent = document.querySelector('.dropdown-sort .dropdown-content');
-    const sortByPriorityBtn = document.getElementById('sortByPriority');
-    const sortByDateBtn = document.getElementById('sortByDate');
-    const sortByCreationBtn = document.getElementById('sortByCreation');
+    // State
+    let tasks = JSON.parse(localStorage.getItem('tareamaster_tasks')) || [];
+    let currentFilter = 'all';
+    let currentSearch = '';
+    let notificationsEnabled = JSON.parse(localStorage.getItem('tareamaster_notifications')) || false;
+    let notificationPermission = false;
 
-    // --- Variables de Estado Globales ---
-    let notificationPermissionGranted = false;
-    // Carga la preferencia de notificación del usuario, por defecto a falso si no está definida
-    let userNotificationsEnabled = JSON.parse(localStorage.getItem('userNotificationsEnabled')) || false;
-    let notificationIntervalId = null; // Para almacenar el ID del intervalo de notificaciones
-    // Carga las tareas desde localStorage o inicializa un array vacío si no hay tareas guardadas
-    let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+    // Maximum characters allowed
+    const MAX_CHARS = 50;
 
-    // --- Funcionalidad de Temas ---
-    // Carga el tema guardado en localStorage al iniciar la aplicación
-    const savedTheme = localStorage.getItem('theme');
-    if (savedTheme) {
-        body.setAttribute('data-theme', savedTheme);
-        updateToggleIcon(savedTheme);
-    }
+    // Init Theme
+    const savedTheme = localStorage.getItem('tareamaster_theme') || 'dark';
+    html.setAttribute('data-theme', savedTheme);
+    updateThemeIcon(savedTheme);
 
-    // Maneja el cambio de tema al hacer clic en el botón de alternar tema
-    themeToggle.addEventListener('click', function () {
-        const currentTheme = body.getAttribute('data-theme');
-        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-        body.setAttribute('data-theme', newTheme);
-        localStorage.setItem('theme', newTheme);
-        updateToggleIcon(newTheme);
-    });
+    // Initialize
+    init();
 
-    // Actualiza el icono del botón de tema para reflejar el tema actual
-    function updateToggleIcon(theme) {
-        const icon = themeToggle.querySelector('i');
-        if (icon) {
-            if (theme === 'dark') {
-                icon.classList.remove('fa-moon');
-                icon.classList.add('fa-sun');
-            } else {
-                icon.classList.remove('fa-sun');
-                icon.classList.add('fa-moon');
-            }
-        }
-    }
-
-    // --- Funciones de Utilidad ---
-    // Formatea una cadena de fecha a un formato legible (dd/mm/aaaa)
-    function formatDate(dateString) {
-        if (!dateString) return '';
-        const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
-        const date = new Date(dateString);
-        return isNaN(date.getTime()) ? '' : date.toLocaleDateString('es-ES', options);
-    }
-
-    // --- Funciones de Notificaciones ---
-
-    // Envía una notificación de tarea al usuario
-    function sendTaskNotification(task) {
-        if (notificationPermissionGranted && userNotificationsEnabled) {
-            const today = new Date().toISOString().split('T')[0];
-
-            // Envía la notificación solo si no ha sido notificada para hoy
-            if (task.notifiedForDay !== today) {
-                new Notification("TareaMaster: Tarea Próxima", {
-                    body: `${task.text} vence el ${formatDate(task.date)}`,
-                    icon: 'LOGOINTERFAZ.png' // Asegúrate de que esta ruta sea accesible
-                });
-
-                task.notifiedForDay = today; // Marca la tarea como notificada para hoy
-                saveTasks(); // Guarda el estado actualizado de la tarea
-            }
-        }
-    }
-
-    // Comprueba las tareas próximas a vencer y envía notificaciones si aplica
-    function checkAndSendDueTaskNotifications() {
-        if (!notificationPermissionGranted || !userNotificationsEnabled) {
-            return; // Sale si no hay permiso o las notificaciones están desactivadas
-        }
-
-        const now = new Date();
-        // Define el umbral para "próxima a vencer": hasta el final del día de mañana
-        const tomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 23, 59, 59);
-        const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0); // Inicio de hoy
-
-        tasks.forEach(task => {
-            // Asegura que la tarea tenga fecha, no esté completada y la fecha sea válida
-            if (task.date && !task.completed && !isNaN(new Date(task.date))) {
-                const taskDueDate = new Date(task.date);
-                // Normaliza la fecha de vencimiento de la tarea al inicio del día para la comparación
-                const taskDueDay = new Date(taskDueDate.getFullYear(), taskDueDate.getMonth(), taskDueDate.getDate(), 0, 0, 0);
-
-                // Comprueba si la tarea vence hoy o mañana
-                if (taskDueDay >= todayStart && taskDueDay <= tomorrow) {
-                    sendTaskNotification(task);
+    function init() {
+        renderTasks();
+        updateStats();
+        setupEventListeners();
+        checkNotificationSupport();
+        
+        // Sortable JS setup
+        if (typeof Sortable !== 'undefined') {
+            Sortable.create(taskList, {
+                animation: 150,
+                handle: '.drag-handle',
+                ghostClass: 'sortable-ghost',
+                onEnd: () => {
+                    const newOrder = [];
+                    taskList.querySelectorAll('.task-item').forEach(el => {
+                        const id = el.dataset.id;
+                        const task = tasks.find(t => t.id === id);
+                        if(task) newOrder.push(task);
+                    });
+                    tasks = newOrder;
+                    saveTasks();
                 }
-            }
+            });
+        }
+    }
+
+    function setupEventListeners() {
+        // Theme Toggle
+        themeToggle.addEventListener('click', () => {
+            const current = html.getAttribute('data-theme');
+            const next = current === 'dark' ? 'light' : 'dark';
+            html.setAttribute('data-theme', next);
+            localStorage.setItem('tareamaster_theme', next);
+            updateThemeIcon(next);
+            showToast(`Modo ${next === 'dark' ? 'oscuro' : 'claro'} activado`, 'info');
         });
-    }
 
-    // Actualiza el estado visual del botón de notificaciones
-    function updateNotificationUI() {
-        if (notificationStatusSpan && toggleNotificationsBtn) {
-            const icon = toggleNotificationsBtn.querySelector('i');
-            if (userNotificationsEnabled && notificationPermissionGranted) {
-                notificationStatusSpan.textContent = 'ON';
-                notificationStatusSpan.classList.add('active');
-                if (icon) icon.classList.replace('fa-bell-slash', 'fa-bell');
-            } else {
-                notificationStatusSpan.textContent = 'OFF';
-                notificationStatusSpan.classList.remove('active');
-                if (icon) icon.classList.replace('fa-bell', 'fa-bell-slash');
-            }
-        }
-    }
-
-    // Inicia el intervalo para comprobar y enviar notificaciones
-    function startNotificationChecks() {
-        if (notificationIntervalId === null) {
-            notificationIntervalId = setInterval(() => {
-                checkAndSendDueTaskNotifications();
-            }, 3600000); // Cada hora (3.600.000 milisegundos)
-        }
-    }
-
-    // Detiene el intervalo de comprobación de notificaciones
-    function stopNotificationChecks() {
-        if (notificationIntervalId !== null) {
-            clearInterval(notificationIntervalId);
-            notificationIntervalId = null;
-        }
-    }
-
-    // Alterna el estado de las notificaciones (activar/desactivar por el usuario)
-    function toggleNotifications() {
-        if (!userNotificationsEnabled) { // Si el usuario las quiere activar
-            if (!("Notification" in window)) {
-                // Usar un modal en lugar de alert
-                showModal("Tu navegador no soporta notificaciones de escritorio.");
-                return;
-            }
-
-            if (Notification.permission === "denied") {
-                showModal("Las notificaciones están bloqueadas por tu navegador. Por favor, revoca el permiso manualmente en la configuración del sitio para activarlas.");
-                userNotificationsEnabled = false; // Asegura que el estado interno sea 'OFF'
-                localStorage.setItem('userNotificationsEnabled', false);
-                updateNotificationUI();
-                return;
-            }
-
-            if (Notification.permission === "granted") {
-                notificationPermissionGranted = true;
-                userNotificationsEnabled = true;
-                localStorage.setItem('userNotificationsEnabled', true);
-                startNotificationChecks();
-                checkAndSendDueTaskNotifications(); // Ejecutar inmediatamente
-                updateNotificationUI();
-            } else { // Permiso es 'default'
-                Notification.requestPermission().then(permission => {
-                    if (permission === "granted") {
-                        notificationPermissionGranted = true;
-                        userNotificationsEnabled = true;
-                        localStorage.setItem('userNotificationsEnabled', true);
-                        startNotificationChecks();
-                        checkAndSendDueTaskNotifications();
-                    } else {
-                        notificationPermissionGranted = false;
-                        userNotificationsEnabled = false;
-                        localStorage.setItem('userNotificationsEnabled', false);
-                        showModal("Has denegado el permiso de notificaciones. No podremos enviarte alertas.");
-                    }
-                    updateNotificationUI();
-                });
-            }
-        } else { // Si el usuario las quiere desactivar
-            userNotificationsEnabled = false;
-            localStorage.setItem('userNotificationsEnabled', false);
-            stopNotificationChecks();
-            updateNotificationUI();
-        }
-    }
-
-    // --- Funcionalidad de Tareas ---
-
-    // Renderiza las tareas en la lista
-    function renderTasks() {
-        taskList.innerHTML = ''; // Limpia la lista actual
-        tasks.forEach((task) => {
-            const li = document.createElement('li');
-            li.draggable = true;
-            li.className = `prioritat-${task.priority || 'null'}`;
-            li.dataset.id = task.id; // Asigna el ID único para referencia en reordenación
-
-            // Icono de prioridad
-            if (task.priority) {
-                const priorityIcon = document.createElement('i');
-                priorityIcon.className = task.priority === 'alta' ? 'fas fa-exclamation-circle' :
-                                        task.priority === 'mitjana' ? 'fas fa-exclamation-triangle' :
-                                        task.priority === 'baixa' ? 'fas fa-check-circle' : '';
-                li.appendChild(priorityIcon);
-            }
-
-            // Texto de la tarea (unificado con fecha)
-            const taskText = document.createElement('span');
-            taskText.textContent = task.text + (task.date ? ` (${formatDate(task.date)})` : '');
-            li.appendChild(taskText);
-
-            // Contenedor de botones
-            const buttonContainer = document.createElement('div');
-            buttonContainer.classList.add('button-container');
-
-            // Botón de completado
-            const completeBtn = document.createElement('button');
-            completeBtn.classList.add('complete-btn');
-            completeBtn.innerHTML = '<i class="fas fa-check"></i>'; // Icono de check
-            completeBtn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                toggleTaskCompletion(task.id); // Pasa el ID en lugar del índice
-            });
-
-            // Botón de editar
-            const editBtn = document.createElement('button');
-            editBtn.innerHTML = '<i class="fas fa-edit"></i>'; // Icono de editar
-            editBtn.classList.add('edit-btn');
-            editBtn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                editTask(task.id, li); // Pasa el ID y el elemento li
-            });
-
-            // Botón de eliminar
-            const deleteBtn = document.createElement('button');
-            deleteBtn.innerHTML = '<i class="fas fa-trash-alt"></i>'; // Icono de basura
-            deleteBtn.classList.add('delete-btn');
-            deleteBtn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                deleteTask(task.id); // Pasa el ID
-            });
-
-            buttonContainer.appendChild(completeBtn);
-            buttonContainer.appendChild(editBtn);
-            buttonContainer.appendChild(deleteBtn);
-            li.appendChild(buttonContainer);
-            taskList.appendChild(li);
-
-            // Aplica la clase 'completed' si la tarea está completada
-            if (task.completed) {
-                li.classList.add('completed');
-            }
+        // Add Task
+        addTaskBtn.addEventListener('click', handleAddTask);
+        taskInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') handleAddTask();
         });
+
+        // Character Counter
+        taskInput.addEventListener('input', () => {
+            const len = taskInput.value.length;
+            charCounter.textContent = `${len}/${MAX_CHARS}`;
+            if (len >= MAX_CHARS) charCounter.classList.add('limit');
+            else charCounter.classList.remove('limit');
+        });
+
+        // Search & Clear
+        searchInput.addEventListener('input', (e) => {
+            currentSearch = e.target.value.toLowerCase();
+            clearSearchBtn.style.display = currentSearch ? 'flex' : 'none';
+            renderTasks();
+        });
+
+        clearSearchBtn.addEventListener('click', () => {
+            searchInput.value = '';
+            currentSearch = '';
+            clearSearchBtn.style.display = 'none';
+            renderTasks();
+        });
+
+        // Filters
+        filterTabs.forEach(tab => {
+            tab.addEventListener('click', (e) => {
+                filterTabs.forEach(t => t.classList.remove('active'));
+                e.target.classList.add('active');
+                currentFilter = e.target.dataset.filter;
+                renderTasks();
+            });
+        });
+
+        // Quick Sorts
+        document.getElementById('sortByPriority').addEventListener('click', () => sortTasks('priority'));
+        document.getElementById('sortByDate').addEventListener('click', () => sortTasks('date'));
+        document.getElementById('sortByCreation').addEventListener('click', () => sortTasks('creation'));
+
+        // Settings Panel
+        settingsBtn.addEventListener('click', () => {
+            settingsPanel.classList.add('active');
+            settingsOverlay.classList.add('active');
+        });
+
+        const closeSettings = () => {
+            settingsPanel.classList.remove('active');
+            settingsOverlay.classList.remove('active');
+        };
+
+        closeSettingsBtn.addEventListener('click', closeSettings);
+        settingsOverlay.addEventListener('click', closeSettings);
+
+        // Action Buttons inside settings
+        clearCompletedBtn.addEventListener('click', () => {
+            closeSettings();
+            showConfirmModal('¿Eliminar todas las tareas completadas?', () => {
+                const oldCount = tasks.length;
+                tasks = tasks.filter(t => !t.completed);
+                if (tasks.length < oldCount) {
+                    saveTasks();
+                    renderTasks();
+                    showToast('Tareas completadas eliminadas', 'success');
+                }
+            });
+        });
+
+        clearAllTasksBtn.addEventListener('click', () => {
+            closeSettings();
+            showConfirmModal('¿Estás seguro de eliminar TODAS las tareas? Esta acción no se puede deshacer.', () => {
+                tasks = [];
+                saveTasks();
+                renderTasks();
+                showToast('Todas las tareas han sido eliminadas', 'success');
+            });
+        });
+
+        toggleNotificationsBtn.addEventListener('click', handleToggleNotifications);
     }
 
-    // Añade una nueva tarea a la lista
-    function addTask() {
+    // --- Core Functions ---
+
+    function handleAddTask() {
         const text = taskInput.value.trim();
         const priority = prioritySelect.value;
-        const date = taskDateInput.value || null; // Obtiene la fecha del input
+        const date = taskDate.value;
+        const category = categorySelect.value;
 
-        if (text.length > 24) {
-            showModal("La tarea no puede tener más de 24 caracteres.");
-            return;
-        }
-        if (text === '') {
-            showModal("La descripción de la tarea no puede estar vacía.");
+        if (!text) {
+            showAlertModal('La descripción de la tarea no puede estar vacía.');
             return;
         }
 
-        if (text !== '') {
-            // Crea un ID único y la fecha de creación para la tarea
-            const newTask = {
-                id: crypto.randomUUID(), // Genera un ID único para la tarea
-                text,
-                priority: priority || null,
-                date,
-                completed: false,
-                notifiedForDay: null,
-                creationDate: Date.now() // Almacena el timestamp de creación
-            };
-            tasks.push(newTask); // Añade la nueva tarea al array
-            taskInput.value = '';
-            prioritySelect.value = '';
-            taskDateInput.value = '';
-            charCounter.textContent = '0/24';
-            saveTasks();
-            renderTasks();
-            // Si las notificaciones están activadas, comprueba si debe enviar una para la nueva tarea
-            if (userNotificationsEnabled && notificationPermissionGranted) {
-                checkAndSendDueTaskNotifications();
-            }
+        if (text.length > MAX_CHARS) {
+            showAlertModal(`La tarea no puede exceder los ${MAX_CHARS} caracteres.`);
+            return;
         }
-    }
 
-    // Alterna el estado de completado de una tarea
-    function toggleTaskCompletion(taskId) {
-        const taskIndex = tasks.findIndex(task => task.id === taskId);
-        if (taskIndex > -1) {
-            tasks[taskIndex].completed = !tasks[taskIndex].completed;
-            saveTasks();
-            renderTasks();
+        const newTask = {
+            id: crypto.randomUUID(),
+            text,
+            priority,
+            date,
+            category,
+            completed: false,
+            createdAt: Date.now()
+        };
+
+        tasks.unshift(newTask); // Add to top
+        saveTasks();
+        
+        // Reset form
+        taskInput.value = '';
+        prioritySelect.value = '';
+        taskDate.value = '';
+        categorySelect.value = '';
+        charCounter.textContent = `0/${MAX_CHARS}`;
+        charCounter.classList.remove('limit');
+        
+        // Clear search/filters to see the new task
+        if (currentFilter !== 'all' || currentSearch !== '') {
+            currentFilter = 'all';
+            currentSearch = '';
+            searchInput.value = '';
+            clearSearchBtn.style.display = 'none';
+            filterTabs.forEach(t => {
+                t.classList.toggle('active', t.dataset.filter === 'all');
+            });
         }
+        
+        renderTasks();
+        showToast('Tarea añadida con éxito', 'success');
+        checkAndNotify();
     }
 
-    // Elimina una tarea
-    function deleteTask(taskId) {
-        // Usar un modal de confirmación
-        showConfirmationModal('¿Estás seguro de que quieres eliminar esta tarea?', () => {
-            tasks = tasks.filter(task => task.id !== taskId);
-            saveTasks();
-            renderTasks();
-        });
-    }
-
-    // Edita una tarea existente
-    function editTask(taskId, li) {
-        const task = tasks.find(t => t.id === taskId);
-        if (!task) return;
-
-        // Desactivar el arrastre mientras se edita
-        li.draggable = false;
-
-        // Crear elementos del formulario de edición
-        const editInput = document.createElement('input');
-        editInput.type = 'text';
-        editInput.value = task.text;
-        editInput.classList.add('edit-input');
-        editInput.maxLength = 24; // Limita los caracteres también en edición
-
-        const charCounterEdit = document.createElement('div');
-        charCounterEdit.classList.add('char-counter', 'edit-char-counter');
-        charCounterEdit.textContent = `${editInput.value.length}/24`;
-
-        editInput.addEventListener('input', function() {
-            const currentLength = editInput.value.length;
-            charCounterEdit.textContent = `${currentLength}/24`;
-            charCounterEdit.style.color = currentLength > 24 ? 'red' : '#666';
+    function renderTasks() {
+        taskList.innerHTML = '';
+        
+        let filteredTasks = tasks.filter(task => {
+            // Search filter
+            if (currentSearch && !task.text.toLowerCase().includes(currentSearch)) return false;
+            
+            // Tab filter
+            if (currentFilter === 'all') return true;
+            if (currentFilter === 'pending') return !task.completed;
+            if (currentFilter === 'completed') return task.completed;
+            if (['alta', 'mitjana', 'baixa'].includes(currentFilter)) return task.priority === currentFilter;
+            
+            return true;
         });
 
-        const prioritySelectEdit = document.createElement('select');
-        prioritySelectEdit.innerHTML = `
-            <option value="">Sin prioridad</option>
-            <option value="alta" ${task.priority === 'alta' ? 'selected' : ''}>Alta</option>
-            <option value="mitjana" ${task.priority === 'mitjana' ? 'selected' : ''}>Media</option>
-            <option value="baixa" ${task.priority === 'baixa' ? 'selected' : ''}>Baja</option>
+        if (filteredTasks.length === 0) {
+            emptyState.style.display = 'block';
+            taskList.style.display = 'none';
+        } else {
+            emptyState.style.display = 'none';
+            taskList.style.display = 'flex';
+            
+            filteredTasks.forEach(task => {
+                taskList.appendChild(createTaskElement(task));
+            });
+        }
+
+        // Update list count text
+        if (currentSearch) {
+            taskListCount.textContent = `${filteredTasks.length} resultados encontrados`;
+        } else {
+            taskListCount.textContent = `${filteredTasks.length} tareas`;
+        }
+
+        updateStats();
+    }
+
+    function createTaskElement(task) {
+        const li = document.createElement('li');
+        li.className = `task-item prio-${task.priority || 'none'} ${task.completed ? 'completed' : ''}`;
+        li.dataset.id = task.id;
+
+        // Meta calculations
+        let dateHtml = '';
+        if (task.date) {
+            const diffInfo = getDaysDiff(task.date);
+            dateHtml = `<span class="meta-badge meta-date ${diffInfo.class}"><i class="fas fa-calendar-alt"></i> ${diffInfo.text}</span>`;
+        }
+        
+        let catHtml = '';
+        if (task.category) {
+            const catIcons = { 'trabajo': 'briefcase', 'personal': 'home', 'salud': 'heartbeat', 'estudio': 'book', 'otro': 'thumb-tack' };
+            const icon = catIcons[task.category] || 'tag';
+            catHtml = `<span class="meta-badge"><i class="fas fa-${icon}"></i> ${capitalize(task.category)}</span>`;
+        }
+
+        li.innerHTML = `
+            <i class="fas fa-grip-vertical drag-handle" title="Arrastrar para reordenar"></i>
+            <div class="task-checkbox-wrapper">
+                <input type="checkbox" class="custom-checkbox" ${task.completed ? 'checked' : ''}>
+            </div>
+            <div class="task-content">
+                <span class="task-text">${escapeHTML(task.text)}</span>
+                <div class="task-meta">
+                    ${dateHtml}
+                    ${catHtml}
+                </div>
+            </div>
+            <div class="task-actions">
+                <button class="action-btn btn-edit" title="Editar"><i class="fas fa-pen"></i></button>
+                <button class="action-btn btn-delete" title="Eliminar"><i class="fas fa-trash"></i></button>
+            </div>
         `;
-        prioritySelectEdit.classList.add('priority-select');
 
-        const dateInputEdit = document.createElement('input');
-        dateInputEdit.type = 'date';
-        dateInputEdit.value = task.date || '';
-        dateInputEdit.classList.add('date-input');
+        // Checkbox Toggle
+        const checkbox = li.querySelector('.custom-checkbox');
+        checkbox.addEventListener('change', (e) => {
+            task.completed = e.target.checked;
+            if (task.completed) {
+                li.classList.add('celebrate-effect');
+                setTimeout(() => li.classList.remove('celebrate-effect'), 500);
+            }
+            saveTasks();
+            renderTasks(); // Re-render to handle filtering
+        });
 
-        const saveBtn = document.createElement('button');
-        saveBtn.textContent = 'Guardar';
-        saveBtn.classList.add('save-btn');
-        saveBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            const newText = editInput.value.trim();
-            if (newText.length > 24) {
-                showModal("La tarea no puede tener más de 24 caracteres.");
-                return;
-            }
-            if (newText === '') {
-                showModal("La descripción de la tarea no puede estar vacía.");
-                return;
-            }
+        // Delete Task
+        li.querySelector('.btn-delete').addEventListener('click', () => {
+            showConfirmModal('¿Eliminar esta tarea?', () => {
+                tasks = tasks.filter(t => t.id !== task.id);
+                saveTasks();
+                renderTasks();
+                showToast('Tarea eliminada', 'info');
+            });
+        });
+
+        // Edit Task
+        li.querySelector('.btn-edit').addEventListener('click', () => {
+            renderEditForm(li, task);
+        });
+
+        return li;
+    }
+
+    function renderEditForm(li, task) {
+        li.innerHTML = `
+            <div class="edit-form">
+                <input type="text" class="edit-input" value="${escapeHTML(task.text)}" maxlength="${MAX_CHARS}">
+                <div class="edit-controls">
+                    <select class="edit-select edit-prio">
+                        <option value="" ${!task.priority ? 'selected' : ''}>Sin prioridad</option>
+                        <option value="alta" ${task.priority === 'alta' ? 'selected' : ''}>🔴 Alta</option>
+                        <option value="mitjana" ${task.priority === 'mitjana' ? 'selected' : ''}>🟡 Media</option>
+                        <option value="baixa" ${task.priority === 'baixa' ? 'selected' : ''}>🟢 Baja</option>
+                    </select>
+                    <select class="edit-select edit-cat">
+                        <option value="" ${!task.category ? 'selected' : ''}>Sin categoría</option>
+                        <option value="trabajo" ${task.category === 'trabajo' ? 'selected' : ''}>💼 Trabajo</option>
+                        <option value="personal" ${task.category === 'personal' ? 'selected' : ''}>🏠 Personal</option>
+                        <option value="salud" ${task.category === 'salud' ? 'selected' : ''}>💪 Salud</option>
+                        <option value="estudio" ${task.category === 'estudio' ? 'selected' : ''}>📚 Estudio</option>
+                        <option value="otro" ${task.category === 'otro' ? 'selected' : ''}>📌 Otro</option>
+                    </select>
+                    <input type="date" class="edit-date" value="${task.date || ''}">
+                    <div class="edit-actions">
+                        <button class="btn-cancel"><i class="fas fa-times"></i></button>
+                        <button class="btn-save"><i class="fas fa-check"></i> Guardar</button>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        const input = li.querySelector('.edit-input');
+        input.focus();
+
+        li.querySelector('.btn-cancel').addEventListener('click', () => {
+            renderTasks(); // Re-render to cancel
+        });
+
+        li.querySelector('.btn-save').addEventListener('click', () => {
+            const newText = input.value.trim();
+            if (!newText) return showAlertModal('El texto no puede estar vacío');
+            if (newText.length > MAX_CHARS) return showAlertModal(`Máximo ${MAX_CHARS} caracteres`);
 
             task.text = newText;
-            task.priority = prioritySelectEdit.value || null;
-            task.date = dateInputEdit.value || null;
+            task.priority = li.querySelector('.edit-prio').value;
+            task.category = li.querySelector('.edit-cat').value;
+            task.date = li.querySelector('.edit-date').value;
+            
             saveTasks();
             renderTasks();
-            li.draggable = true; // Reactivar arrastre
+            showToast('Tarea actualizada', 'success');
         });
-
-        // Limpiar el contenido de la tarea y añadir el formulario de edición
-        li.innerHTML = '';
-        li.appendChild(editInput);
-        li.appendChild(prioritySelectEdit);
-        li.appendChild(dateInputEdit);
-        li.appendChild(saveBtn);
     }
 
-    // Guarda las tareas en localStorage
-    function saveTasks() {
-        localStorage.setItem('tasks', JSON.stringify(tasks));
-    }
-
-    // --- Funcionalidad de Ordenación ---
-
-    // Ordena las tareas según el tipo especificado
     function sortTasks(type) {
-        switch (type) {
-            case 'priority':
-                // Define el orden de prioridad: Alta > Media > Baja > Sin Prioridad
-                const priorityOrder = { 'alta': 1, 'mitjana': 2, 'baixa': 3, 'null': 4, '': 4 };
-                tasks.sort((a, b) => {
-                    const priorityA = priorityOrder[a.priority || 'null'];
-                    const priorityB = priorityOrder[b.priority || 'null'];
-
-                    // Ordena por prioridad primero
-                    if (priorityA !== priorityB) {
-                        return priorityA - priorityB;
-                    }
-                    // Si las prioridades son iguales, ordena por fecha (las que tienen fecha primero)
-                    return sortByDateComparator(a, b);
-                });
-                break;
-            case 'date':
-                tasks.sort(sortByDateComparator);
-                break;
-            case 'creation':
-                // Ordena por la fecha de creación (más reciente primero)
-                tasks.sort((a, b) => b.creationDate - a.creationDate);
-                break;
-            default:
-                // No hace nada o aplica un orden por defecto si es necesario
-                break;
+        if (type === 'priority') {
+            const pOrder = { 'alta': 1, 'mitjana': 2, 'baixa': 3, '': 4, 'none': 4 };
+            tasks.sort((a, b) => pOrder[a.priority || ''] - pOrder[b.priority || '']);
+            showToast('Ordenado por prioridad', 'info');
+        } else if (type === 'date') {
+            tasks.sort((a, b) => {
+                if (!a.date) return 1;
+                if (!b.date) return -1;
+                return new Date(a.date) - new Date(b.date);
+            });
+            showToast('Ordenado por fecha', 'info');
+        } else if (type === 'creation') {
+            tasks.sort((a, b) => b.createdAt - a.createdAt);
+            showToast('Ordenado por fecha de creación', 'info');
         }
         saveTasks();
         renderTasks();
     }
 
-    // Comparador de fechas para la función de ordenación
-    function sortByDateComparator(a, b) {
-        const dateA = a.date ? new Date(a.date).getTime() : Infinity; // Tareas sin fecha van al final
-        const dateB = b.date ? new Date(b.date).getTime() : Infinity; // Tareas sin fecha van al final
-        return dateA - dateB;
+    function updateStats() {
+        const total = tasks.length;
+        const completed = tasks.filter(t => t.completed).length;
+        const pending = total - completed;
+        const percent = total === 0 ? 0 : Math.round((completed / total) * 100);
+
+        // Animate numbers (simple implementation)
+        totalCount.textContent = total;
+        pendingCount.textContent = pending;
+        doneCount.textContent = completed;
+        
+        progressPercent.textContent = `${percent}%`;
+        progressBar.style.width = `${percent}%`;
     }
 
-    // --- Event Listeners Principales ---
-
-    // Añadir tareas con el botón
-    if (addTaskBtn) {
-        addTaskBtn.addEventListener('click', addTask);
+    function saveTasks() {
+        localStorage.setItem('tareamaster_tasks', JSON.stringify(tasks));
     }
 
-    // Añadir tareas con la tecla Enter
-    if (taskInput) {
-        taskInput.addEventListener('keypress', function (e) {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                addTask();
-            }
-        });
-        // Contador de caracteres para el input de tarea
-        taskInput.addEventListener('input', function () {
-            const currentLength = taskInput.value.length;
-            if (charCounter) {
-                charCounter.textContent = `${currentLength}/24`;
-                charCounter.style.color = currentLength > 24 ? 'red' : '#666';
-            }
-        });
-    }
+    // --- Utility Functions ---
 
-    // Configura SortableJS para la lista de tareas (arrastrar y soltar)
-    if (taskList && typeof Sortable !== 'undefined') {
-        Sortable.create(taskList, {
-            animation: 150,
-            ghostClass: 'ghost',
-            onEnd: function (evt) {
-                updateTaskOrder(); // Actualiza el orden después de arrastrar y soltar
-            }
-        });
-    }
-
-    // Actualiza el orden de las tareas en el localStorage después de arrastrar y soltar
-    function updateTaskOrder() {
-        const updatedTasks = [];
-        Array.from(taskList.children).forEach((taskElement) => {
-            const taskId = taskElement.dataset.id; // Obtiene el ID de la tarea
-            const originalTask = tasks.find(t => t.id === taskId); // Busca la tarea original por su ID
-
-            if (originalTask) {
-                updatedTasks.push(originalTask); // Añade la tarea original con todos sus datos
-            }
-        });
-        tasks = updatedTasks;
-        saveTasks();
-        // No es necesario llamar a renderTasks aquí, SortableJS ya actualiza el DOM
-        // y la UI ya refleja el nuevo orden visualmente.
-    }
-
-    // --- Funcionalidad del botón de ajustes y menú ---
-
-    // Muestra/oculta el menú de ajustes al hacer clic en el botón de ajustes
-    if (settingsBtn) {
-        settingsBtn.addEventListener('click', function(event) {
-            if (settingsMenu) {
-                settingsMenu.classList.toggle('active');
-            }
-            event.stopPropagation(); // Evita que el clic se propague y cierre el menú inmediatamente
-        });
-    }
-
-    // Oculta el menú de ajustes y el desplegable de ordenación si se hace clic fuera de ellos
-    document.addEventListener('click', function(event) {
-        if (settingsMenu && settingsBtn && !settingsMenu.contains(event.target) && !settingsBtn.contains(event.target)) {
-            settingsMenu.classList.remove('active');
-        }
-        if (dropdownSortContent && dropdownSortToggle && !dropdownSortContent.contains(event.target) && !dropdownSortToggle.contains(event.target)) {
-            dropdownSortContent.classList.remove('active'); // Oculta el desplegable de ordenación
-        }
-    });
-
-    // Elimina todas las tareas (con confirmación)
-    if (clearAllTasksBtn) {
-        clearAllTasksBtn.addEventListener('click', function() {
-            showConfirmationModal('¿Estás seguro de que quieres eliminar TODAS las tareas pendientes? Esta acción no se puede deshacer.', () => {
-                tasks = [];
-                saveTasks();
-                renderTasks();
-                if (settingsMenu) {
-                    settingsMenu.classList.remove('active');
-                }
-            });
-        });
-    }
-
-    // --- Inicialización y Event Listeners para Notificaciones ---
-
-    // Event listener para el botón de activar/desactivar notificaciones
-    if (toggleNotificationsBtn) {
-        toggleNotificationsBtn.addEventListener('click', toggleNotifications);
-    }
-
-    // Comprueba el soporte de notificaciones del navegador al cargar la página
-    if ("Notification" in window) {
-        if (Notification.permission === "granted") {
-            notificationPermissionGranted = true;
+    function updateThemeIcon(theme) {
+        const i = themeToggle.querySelector('i');
+        if (theme === 'dark') {
+            i.className = 'fas fa-sun';
+            themeToggle.setAttribute('title', 'Modo Claro');
         } else {
-            notificationPermissionGranted = false;
-        }
-    } else {
-        notificationPermissionGranted = false;
-        if (toggleNotificationsBtn) {
-            toggleNotificationsBtn.disabled = true;
-            toggleNotificationsBtn.textContent = "Notificaciones (No Soportadas)";
-            const icon = toggleNotificationsBtn.querySelector('i');
-            if (icon) icon.className = 'fas fa-bell-slash';
+            i.className = 'fas fa-moon';
+            themeToggle.setAttribute('title', 'Modo Oscuro');
         }
     }
 
-    updateNotificationUI(); // Actualiza la UI del botón de notificaciones al cargar
-
-    // Si el usuario las tenía activadas y el navegador tiene permiso, iniciar las comprobaciones
-    if (userNotificationsEnabled && notificationPermissionGranted) {
-        startNotificationChecks();
-        checkAndSendDueTaskNotifications(); // Primera comprobación al iniciar
+    function escapeHTML(str) {
+        const div = document.createElement('div');
+        div.textContent = str;
+        return div.innerHTML;
     }
 
-    // --- Funcionalidad del Campo de Fecha ---
-    if (taskDateInput) {
-        taskDateInput.addEventListener('focus', function() {
-            if(!this.value) this.type = 'date';
-        });
-        taskDateInput.addEventListener('blur', function() {
-            if(!this.value) {
-                this.type = 'text';
-                this.placeholder = 'dd/mm/aaaa';
-            }
-        });
+    function capitalize(str) {
+        if (!str) return '';
+        return str.charAt(0).toUpperCase() + str.slice(1);
     }
 
-    // --- Nuevos Event Listeners para la ordenación ---
-
-    // Muestra/oculta el contenido del desplegable de ordenación
-    if (dropdownSortToggle) {
-        dropdownSortToggle.addEventListener('click', function(event) {
-            if (dropdownSortContent) {
-                dropdownSortContent.classList.toggle('active');
-            }
-            event.stopPropagation(); // Evita que el clic se propague al documento y cierre inmediatamente
-        });
+    function getDaysDiff(dateString) {
+        const target = new Date(dateString);
+        target.setHours(0, 0, 0, 0);
+        
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        
+        const diffTime = target - today;
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        
+        if (diffDays < 0) return { text: `Vencida hace ${Math.abs(diffDays)}d`, class: 'overdue' };
+        if (diffDays === 0) return { text: 'Hoy', class: 'due-soon' };
+        if (diffDays === 1) return { text: 'Mañana', class: 'due-soon' };
+        
+        const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
+        return { text: target.toLocaleDateString('es-ES', options), class: 'normal' };
     }
 
-    // Event listeners para los botones de ordenación
-    if (sortByPriorityBtn) {
-        sortByPriorityBtn.addEventListener('click', () => {
-            sortTasks('priority');
-            if (dropdownSortContent) dropdownSortContent.classList.remove('active'); // Cierra el desplegable
-            if (settingsMenu) settingsMenu.classList.remove('active'); // Cierra el menú principal
-        });
-    }
-    if (sortByDateBtn) {
-        sortByDateBtn.addEventListener('click', () => {
-            sortTasks('date');
-            if (dropdownSortContent) dropdownSortContent.classList.remove('active');
-            if (settingsMenu) settingsMenu.classList.remove('active');
-        });
-    }
-    if (sortByCreationBtn) {
-        sortByCreationBtn.addEventListener('click', () => {
-            sortTasks('creation');
-            if (dropdownSortContent) dropdownSortContent.classList.remove('active');
-            if (settingsMenu) settingsMenu.classList.remove('active');
-        });
-    }
+    // --- UI Components (Toasts & Modals) ---
 
-    // --- Funciones para Modales (Reemplazo de alert/confirm) ---
-    function showModal(message) {
-        const modalDiv = document.createElement('div');
-        modalDiv.classList.add('custom-modal'); // Añade clase para estilos CSS
-        modalDiv.innerHTML = `
-            <div class="custom-modal-content">
-                <p>${message}</p>
-                <button class="custom-modal-ok-btn">OK</button>
-            </div>
+    function showToast(message, type = 'info') {
+        const toast = document.createElement('div');
+        toast.className = `toast ${type}`;
+        
+        const icons = { 'success': 'check-circle', 'error': 'times-circle', 'info': 'info-circle' };
+        
+        toast.innerHTML = `
+            <i class="fas fa-${icons[type]}"></i>
+            <span>${message}</span>
         `;
-        document.body.appendChild(modalDiv);
-
-        modalDiv.querySelector('.custom-modal-ok-btn').addEventListener('click', () => {
-            document.body.removeChild(modalDiv);
-        });
+        
+        toastContainer.appendChild(toast);
+        
+        // Remove after animation (3s + 0.3s fade)
+        setTimeout(() => {
+            if(toast.parentNode) toast.parentNode.removeChild(toast);
+        }, 3500);
     }
 
-    function showConfirmationModal(message, onConfirm) {
-        const modalDiv = document.createElement('div');
-        modalDiv.classList.add('custom-modal');
-        modalDiv.innerHTML = `
-            <div class="custom-modal-content">
-                <p>${message}</p>
-                <div class="modal-buttons">
-                    <button class="custom-modal-confirm-btn">Sí</button>
-                    <button class="custom-modal-cancel-btn">No</button>
-                </div>
-            </div>
-        `;
-        document.body.appendChild(modalDiv);
+    const confirmModal = document.getElementById('confirmModal');
+    const confirmMessage = document.getElementById('confirmMessage');
+    const confirmYesBtn = document.getElementById('confirmYesBtn');
+    const confirmNoBtn = document.getElementById('confirmNoBtn');
 
-        modalDiv.querySelector('.custom-modal-confirm-btn').addEventListener('click', () => {
-            document.body.removeChild(modalDiv);
+    function showConfirmModal(message, onConfirm) {
+        confirmMessage.textContent = message;
+        confirmModal.style.display = 'flex';
+        
+        const handleYes = () => {
+            cleanup();
             onConfirm();
-        });
+        };
+        const handleNo = () => cleanup();
+        
+        const cleanup = () => {
+            confirmModal.style.display = 'none';
+            confirmYesBtn.removeEventListener('click', handleYes);
+            confirmNoBtn.removeEventListener('click', handleNo);
+        };
 
-        modalDiv.querySelector('.custom-modal-cancel-btn').addEventListener('click', () => {
-            document.body.removeChild(modalDiv);
+        confirmYesBtn.addEventListener('click', handleYes);
+        confirmNoBtn.addEventListener('click', handleNo);
+    }
+
+    const alertModal = document.getElementById('alertModal');
+    const alertMessage = document.getElementById('alertMessage');
+    const alertOkBtn = document.getElementById('alertOkBtn');
+
+    function showAlertModal(message) {
+        alertMessage.textContent = message;
+        alertModal.style.display = 'flex';
+        
+        const cleanup = () => {
+            alertModal.style.display = 'none';
+            alertOkBtn.removeEventListener('click', cleanup);
+        };
+        alertOkBtn.addEventListener('click', cleanup);
+    }
+
+    // --- Notifications logic ---
+    
+    function checkNotificationSupport() {
+        if (!("Notification" in window)) {
+            notificationStatus.textContent = 'NO SOPORTADO';
+            notificationStatus.className = 'status-badge off';
+            toggleNotificationsBtn.disabled = true;
+            return;
+        }
+        
+        notificationPermission = Notification.permission === 'granted';
+        updateNotificationUI();
+        
+        if (notificationsEnabled && notificationPermission) {
+            checkAndNotify();
+            // Check every hour
+            setInterval(checkAndNotify, 3600000); 
+        }
+    }
+
+    function updateNotificationUI() {
+        if (notificationsEnabled && notificationPermission) {
+            notificationStatus.textContent = 'ON';
+            notificationStatus.className = 'status-badge on';
+        } else {
+            notificationStatus.textContent = 'OFF';
+            notificationStatus.className = 'status-badge off';
+        }
+    }
+
+    function handleToggleNotifications() {
+        if (notificationsEnabled) {
+            notificationsEnabled = false;
+            localStorage.setItem('tareamaster_notifications', false);
+            updateNotificationUI();
+            showToast('Notificaciones desactivadas', 'info');
+        } else {
+            if (Notification.permission === 'granted') {
+                notificationsEnabled = true;
+                localStorage.setItem('tareamaster_notifications', true);
+                updateNotificationUI();
+                showToast('Notificaciones activadas', 'success');
+                checkAndNotify();
+            } else if (Notification.permission !== 'denied') {
+                Notification.requestPermission().then(permission => {
+                    if (permission === 'granted') {
+                        notificationPermission = true;
+                        notificationsEnabled = true;
+                        localStorage.setItem('tareamaster_notifications', true);
+                        updateNotificationUI();
+                        showToast('Notificaciones activadas', 'success');
+                        checkAndNotify();
+                    } else {
+                        showAlertModal("Permiso de notificaciones denegado.");
+                    }
+                });
+            } else {
+                showAlertModal("Las notificaciones están bloqueadas en tu navegador.");
+            }
+        }
+    }
+
+    function checkAndNotify() {
+        if (!notificationsEnabled || !notificationPermission) return;
+        
+        const todayStr = new Date().toISOString().split('T')[0];
+        
+        tasks.forEach(task => {
+            if (!task.completed && task.date) {
+                const diff = getDaysDiff(task.date);
+                // Si vence hoy o mañana y no hemos notificado hoy
+                if ((diff.text === 'Hoy' || diff.text === 'Mañana') && task.lastNotified !== todayStr) {
+                    new Notification("TareaMaster", {
+                        body: `¡Atención! La tarea "${task.text}" vence ${diff.text.toLowerCase()}.`,
+                        icon: 'LOGOINTERFAZ.png'
+                    });
+                    task.lastNotified = todayStr;
+                    saveTasks();
+                }
+            }
         });
     }
 
-    // Renderiza las tareas iniciales al cargar la página
-    renderTasks();
 });
